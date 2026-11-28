@@ -16,7 +16,7 @@ import type {
   LocationEntry,
   LoreEntry,
 } from '../core/types';
-import { clearNode, el, icon } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions } from '../ui/dom';
 import { LiquidGlassControl } from '../ui/liquid-glass';
 
 let activeBibleGlass: LiquidGlassControl<BibleCategory> | null = null;
@@ -33,6 +33,7 @@ export function renderBibleView(container: HTMLElement, rawActions: AppActions):
     activeBibleGlass.destroy();
     activeBibleGlass = null;
   }
+  const restoreScroll = preserveScrollPositions(container, ['.bv-binder-scroll', '.bv-bible-detail']);
   clearNode(container);
 
   const initialState = rawActions.getState();
@@ -347,6 +348,7 @@ export function renderBibleView(container: HTMLElement, rawActions: AppActions):
 
   layout.append(listPane, detailPane);
   container.append(toolbar, layout);
+  restoreScroll();
 }
 
 function makeFieldInput(

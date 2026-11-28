@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 
 const rootDir = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(resolve(rootDir, 'package.json'), 'utf8'));
-const appVersion = String(pkg.version || '3.2.0-rc.1');
+const appVersion = String(pkg.version || '3.3.7');
 let appCommit = 'local';
 try {
   appCommit = execSync('git rev-parse --short HEAD', { cwd: rootDir, stdio: ['ignore', 'pipe', 'ignore'] })

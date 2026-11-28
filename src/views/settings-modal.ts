@@ -39,7 +39,7 @@ import type {
   ToolTier,
   WindowTitleMode,
 } from '../core/types';
-import { clearNode, el, icon, quillvibeLogo, type IconName } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions, quillvibeLogo, type IconName } from '../ui/dom';
 import { createAppThemeButton } from '../ui/theme-button';
 
 export type SettingsTab = 'fonts' | 'editor' | 'publishing' | 'developer';
@@ -371,6 +371,11 @@ export function showSettingsModal(actions: AppActions, initialTab: SettingsTab =
 }
 
 export function renderSettingsPageView(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, [
+    '.qv-settings-page',
+    '.qv-settings-sidebar-nav',
+    '.qv-settings-page-content',
+  ]);
   clearNode(container);
 
   let activeTab: SettingsTab = currentSettingsTab;
@@ -1721,4 +1726,5 @@ export function renderSettingsPageView(container: HTMLElement, actions: AppActio
   container.appendChild(pageShell);
   renderTabs();
   renderBody();
+  restoreScroll();
 }

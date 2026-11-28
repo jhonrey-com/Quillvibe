@@ -99,6 +99,27 @@ if (nextCargo === cargoText && !cargoText.includes(`version = "${nextVersion}"`)
 }
 writeFileSync(cargoPath, nextCargo, 'utf8');
 
+const versionTsPath = resolve(rootDir, 'src/core/version.ts');
+const versionTsText = readFileSync(versionTsPath, 'utf8');
+const nextVersionTs = versionTsText.replace(/^(\s*:\s*)'[^']*';/m, `$1'${nextVersion}';`);
+if (nextVersionTs === versionTsText && !versionTsText.includes(`'${nextVersion}';`)) {
+  throw new Error('Could not find fallback version in src/core/version.ts');
+}
+writeFileSync(versionTsPath, nextVersionTs, 'utf8');
+
+for (const viteRel of ['vite.config.ts', 'vite.desktop.config.ts']) {
+  const vitePath = resolve(rootDir, viteRel);
+  const viteText = readFileSync(vitePath, 'utf8');
+  const nextVite = viteText.replace(
+    /^(const appVersion = String\(pkg\.version \|\| )'[^']*'\);/m,
+    `$1'${nextVersion}');`,
+  );
+  if (nextVite === viteText && !viteText.includes(`'${nextVersion}');`)) {
+    throw new Error(`Could not find fallback appVersion in ${viteRel}`);
+  }
+  writeFileSync(vitePath, nextVite, 'utf8');
+}
+
 if (isStable) {
   const wingetPath = resolve(rootDir, 'packaging/winget/jhonrey.Quillvibe.yaml');
   const wingetText = readFileSync(wingetPath, 'utf8');
@@ -112,6 +133,14 @@ if (isStable) {
   const brewText = readFileSync(brewPath, 'utf8');
   const updatedBrew = brewText.replace(/^( {2}version\s+)"[^"]*"/m, `$1"${nextVersion}"`);
   writeFileSync(brewPath, updatedBrew, 'utf8');
+
+  const readmePath = resolve(rootDir, 'README.md');
+  const readmeText = readFileSync(readmePath, 'utf8');
+  const updatedReadme = readmeText
+    .replace(/(\(`v\d+\.\d+\.\d+` — Windows, Mac & Linux\))/g, `(\`v${nextVersion}\` — Windows, Mac & Linux)`)
+    .replace(/(### Live Screenshots \()`v\d+\.\d+\.\d+`(\))/g, `$1\`v${nextVersion}\`$2`)
+    .replace(/(GitHub Releases \(<code>)v\d+\.\d+\.\d+(<\/code>\))/g, `$1v${nextVersion}$2`);
+  writeFileSync(readmePath, updatedReadme, 'utf8');
 }
 
 console.log(

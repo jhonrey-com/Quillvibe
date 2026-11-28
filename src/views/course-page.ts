@@ -16,10 +16,11 @@ import {
   type CourseModule,
   type CourseTrackId,
 } from '../ui/course';
-import { clearNode, el, icon } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions } from '../ui/dom';
 import { createAppThemeButton } from '../ui/theme-button';
 
 const COLLAPSE_COMPLETED_KEY = 'quillvibe.courseCollapseCompleted.v1';
+let lastRenderedLessonId = '';
 
 function readCollapseCompletedSetting(): boolean {
   if (typeof window === 'undefined' || !window.localStorage) return true;
@@ -182,6 +183,7 @@ function resolveModuleScreenshot(modId: string): { src: string; caption: string 
  * Full-page book writing & publishing curriculum with calm two-pane reading focus.
  */
 export function renderCoursePageView(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, ['.qv-course-nav-list', '.qv-course-article-wrap']);
   clearNode(container);
 
   const flatAll = getAllFlatLessons(platformFilter);
@@ -653,20 +655,20 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
       el(
         'div',
         { className: 'qv-course-meta-row' },
-        el('span', { className: 'bv-mono-tag', text: `MODULE ${mod.number}: ${mod.title.toUpperCase()}` }),
+        el('span', { className: 'qv-course-breadcrumb', text: `Module ${mod.number} / ${mod.title}` }),
         el(
           'div',
-          { style: { display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } },
+          { style: { display: 'inline-flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' } },
           modPlatform !== 'both'
             ? el('span', {
                 className: 'bv-mono-tag',
-                text: modPlatform === 'desktop' ? 'DESKTOP APP EXCLUSIVE' : 'WEBSITE EDITION',
+                text: modPlatform === 'desktop' ? 'Desktop' : 'Web',
               })
             : null,
           mod.lessons.every((l) => doneSet.has(l.id))
-            ? el('span', { className: 'bv-mono-tag qv-course-mod-done-badge', text: 'COURSE COMPLETED' })
+            ? el('span', { className: 'qv-course-done-label', text: 'Completed' })
             : null,
-          el('span', { className: 'bv-mono-tag', text: `${lesson.durationMin} MIN (${lesson.minTier.toUpperCase()} TIER)` }),
+          el('span', { className: 'bv-mono-tag', text: `${lesson.durationMin} min, ${lesson.minTier}` }),
         ),
       ),
       el('h1', { className: 'qv-course-title', text: lesson.title }),
@@ -724,8 +726,8 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
         { className: 'qv-course-pager', attrs: { 'aria-label': 'Lesson navigation' } },
         prevRef
           ? el('button', {
-              className: 'bv-btn',
-              text: `<- Previous: ${prevRef.lesson.title}`,
+              className: 'bv-btn qv-course-pager-btn',
+              text: `Previous: ${prevRef.lesson.title}`,
               attrs: { type: 'button' },
               on: {
                 click: () => {
@@ -739,8 +741,8 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
           : el('span'),
         nextRef
           ? el('button', {
-              className: 'bv-btn bv-btn-primary',
-              text: `Next: ${nextRef.lesson.title} ->`,
+              className: 'bv-btn bv-btn-primary qv-course-pager-btn',
+              text: `Next: ${nextRef.lesson.title}`,
               attrs: { type: 'button' },
               on: {
                 click: () => {
@@ -755,7 +757,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
               },
             })
           : el('button', {
-              className: 'bv-btn bv-btn-primary',
+              className: 'bv-btn bv-btn-primary qv-course-pager-btn',
               text: 'Finish & Return to Book',
               attrs: { type: 'button' },
               on: {
@@ -773,4 +775,10 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
   container.appendChild(
     el('div', { className: 'qv-course-page' }, sidebar, mainPane),
   );
+  restoreScroll();
+  if (lastRenderedLessonId && lastRenderedLessonId !== currentRef.lesson.id) {
+    const articleWrap = container.querySelector<HTMLElement>('.qv-course-article-wrap');
+    if (articleWrap) articleWrap.scrollTop = 0;
+  }
+  lastRenderedLessonId = currentRef.lesson.id;
 }

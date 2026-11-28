@@ -640,7 +640,9 @@ let sprintStatusEl: HTMLSpanElement;
 let sprintToggleBtnEl: HTMLButtonElement;
 
 function syncWindowAndDocumentTitle(): void {
-  const title = isEmptyTabId(state.activeTabId)
+  const title = state.activeView === 'landing'
+    ? 'Quillvibe'
+    : isEmptyTabId(state.activeTabId)
     ? isTauriRuntime()
       ? 'Quillvibe - New Tab'
       : 'New Tab — Quillvibe'
@@ -1128,6 +1130,19 @@ function rebuildHeaderNavControl(): void {
   }
 }
 
+let suppressNextBrowserPush = false;
+
+function syncWebUrlIfNeeded(effectiveView: AppState['activeView']): void {
+  if (isTauriRuntime() || typeof window === 'undefined') return;
+  const welcomeOpen = Boolean(document.querySelector('.qv-welcome-overlay'));
+  if (welcomeOpen && window.location.pathname === '/start') {
+    return;
+  }
+  const targetPath = routeForState(effectiveView, state.typesetSubTab, state.editorSubMode);
+  syncBrowserPath(targetPath, suppressNextBrowserPush);
+  suppressNextBrowserPush = false;
+}
+
 function renderActiveView(): void {
   if (!shellEl) return;
   hideTooltip();
@@ -1149,6 +1164,22 @@ function renderActiveView(): void {
   const isDevTab = !isTauriRuntime() && state.activeView === 'developer';
   const isStandalonePage =
     isLandingPage || isCourseTab || isHelpTab || isDevTab || isSettingsTab || isManualTab || isExtensionsTab;
+  const effectiveUrlView: AppState['activeView'] = isLandingPage
+    ? 'landing'
+    : isCourseTab
+      ? 'course'
+      : isHelpTab
+        ? 'help'
+        : isSettingsTab
+          ? 'settings'
+          : isManualTab
+            ? 'manual'
+            : isExtensionsTab
+              ? 'extensions'
+              : isDevTab
+                ? 'developer'
+                : state.activeView;
+  syncWebUrlIfNeeded(effectiveUrlView);
   const isFullStagePage = isNewTab || isStandalonePage || isFullStageView(state.activeView);
   shellEl.classList.toggle('is-zen', state.zenMode);
   shellEl.classList.toggle('is-immersive', state.immersiveMode);
@@ -1719,6 +1750,7 @@ const actions: AppActions = {
   setState(patch, rerender = true) {
     const prevView = state.activeView;
     const prevSubTab = state.typesetSubTab;
+    const prevEditorSubMode = state.editorSubMode;
     Object.assign(state, patch);
 
     if (patch.activeView && patch.activeView !== prevView) {
@@ -1746,8 +1778,13 @@ const actions: AppActions = {
       }
     }
 
-    if ((patch.activeView && patch.activeView !== prevView) || (patch.typesetSubTab && patch.typesetSubTab !== prevSubTab)) {
-      syncBrowserPath(routeForState(state.activeView, state.typesetSubTab));
+    if (
+      !isTauriRuntime() &&
+      ((patch.activeView && patch.activeView !== prevView) ||
+        (patch.typesetSubTab && patch.typesetSubTab !== prevSubTab) ||
+        (patch.editorSubMode && patch.editorSubMode !== prevEditorSubMode))
+    ) {
+      syncBrowserPath(routeForState(state.activeView, state.typesetSubTab, state.editorSubMode));
     }
 
     if (rerender) {
@@ -4365,6 +4402,9 @@ async function bootstrap(): Promise<void> {
     if (initialRoute.typesetSubTab) {
       state.typesetSubTab = initialRoute.typesetSubTab;
     }
+    if (initialRoute.editorSubMode) {
+      state.editorSubMode = initialRoute.editorSubMode;
+    }
     forceSplashFromRoute =
       initialRoute.showStartSplash &&
       initialRoute.view !== 'course' &&
@@ -4373,12 +4413,14 @@ async function bootstrap(): Promise<void> {
 
     window.addEventListener('popstate', () => {
       const nextRoute = readInitialBrowserRoute(false);
+      suppressNextBrowserPush = true;
       actions.setState(
         {
           activeView: allowedViewsForTier(getEffectiveTier()).includes(nextRoute.view)
             ? nextRoute.view
             : 'editor',
           ...(nextRoute.typesetSubTab ? { typesetSubTab: nextRoute.typesetSubTab } : {}),
+          ...(nextRoute.editorSubMode ? { editorSubMode: nextRoute.editorSubMode } : {}),
         },
         true,
       );

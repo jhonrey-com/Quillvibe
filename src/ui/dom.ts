@@ -187,6 +187,34 @@ export function clearNode(node: Element): void {
 }
 
 /**
+ * Snapshots scrollTop and scrollLeft for matching scrollable elements inside container
+ * and returns a restore callback that restores them without smooth-scroll animation jumps.
+ */
+export function preserveScrollPositions(container: HTMLElement, selectors: string[]): () => void {
+  const saved = selectors.map((selector) => {
+    const node = container.matches(selector)
+      ? container
+      : container.querySelector<HTMLElement>(selector);
+    return node ? { selector, top: node.scrollTop, left: node.scrollLeft } : null;
+  });
+
+  return () => {
+    for (const item of saved) {
+      if (!item || (item.top === 0 && item.left === 0)) continue;
+      const target = container.matches(item.selector)
+        ? container
+        : container.querySelector<HTMLElement>(item.selector);
+      if (!target) continue;
+      const prevBehavior = target.style.scrollBehavior;
+      target.style.scrollBehavior = 'auto';
+      target.scrollTop = item.top;
+      target.scrollLeft = item.left;
+      target.style.scrollBehavior = prevBehavior;
+    }
+  };
+}
+
+/**
  * Transparent sculpted Quillvibe layered open-folio + page-wing emblem matching public/logo.svg.
  */
 export function quillvibeLogo(size = 24): SVGSVGElement {

@@ -1,8 +1,8 @@
 import type { AppActions, AppState } from '../core/app-context';
-import type { AppThemeId } from '../core/types';
 import { APP_VERSION } from '../core/version';
 import { COURSE_MODULES, getCourseCompletionSummary } from '../ui/course';
-import { clearNode, createMorphThemeIcon, el, icon, quillvibeLogo } from '../ui/dom';
+import { clearNode, el, icon, quillvibeLogo } from '../ui/dom';
+import { createAppThemeButton } from '../ui/theme-button';
 import { openUniversalSearch } from '../ui/universal-search';
 
 type PreviewTabId = 'editor' | 'split' | 'graph' | 'cover' | 'academy';
@@ -12,34 +12,34 @@ const PREVIEW_ITEMS: Record<
   { label: string; src: string; alt: string; caption: string }
 > = {
   editor: {
-    label: 'Draft & Proofread',
+    label: 'Manuscript',
     src: '/screenshots/editor-workspace.png',
-    alt: 'Quillvibe Manuscript workspace showing Binder, Paper Sheet, Proofread/Split Ref controls, and Scene Inspector',
-    caption: 'Unified Draft sheet with Binder navigation, inline Proofread marks, and Scene Inspector.',
+    alt: 'Quillvibe Manuscript workspace showing Binder, writing sheet, Proofread controls, and Scene Inspector',
+    caption: 'Binder tree, distraction-free writing sheet, inline proofreading marks, and Scene Inspector.',
   },
   split: {
-    label: 'Split Ref & Diff',
+    label: 'Split Diff',
     src: '/screenshots/editor-split-diff.png',
-    alt: 'Quillvibe Manuscript Split Reference resizable drawer comparing a second scene beside active prose',
-    caption: 'Resizable Split Reference & Revision Diff drawer docked inside Manuscript Draft Mode.',
+    alt: 'Quillvibe Split Reference drawer comparing a second scene beside active prose',
+    caption: 'Resizable Split Reference drawer and Revision Diff panel inside Manuscript Draft Mode.',
   },
   graph: {
-    label: 'Story Bible & Graph',
+    label: 'Story Graph',
     src: '/screenshots/story-graph.png',
-    alt: 'Quillvibe Story Graph with linked narrative cards, live wire routing, and auto-synced scenes',
-    caption: 'Dual-mode Storyboard & 60 FPS Force Graph synced automatically with your Story Bible.',
+    alt: 'Quillvibe Story Graph with linked narrative cards and orthogonal wire routing',
+    caption: 'Dual-mode orthogonal Storyboard and Force Graph synced live with Story Bible entries.',
   },
   cover: {
-    label: 'Book Cover Studio',
+    label: 'Cover Studio',
     src: '/screenshots/cover-studio.png',
-    alt: 'Quillvibe Book Cover Studio with layered shapes and design inspector',
-    caption: 'Front, spine, back, and dust-jacket flaps with alignment guides, Vector SVG, and Print PDF.',
+    alt: 'Quillvibe Book Cover Studio with vector shapes, layers, and spine inspector',
+    caption: 'Front, spine, back, and flap artboard with alignment guides, Vector SVG, and Print PDF.',
   },
   academy: {
-    label: 'Free Academy Course',
+    label: 'Academy',
     src: '/screenshots/course-academy.png',
-    alt: 'Quillvibe Academy full-page two-pane book writing course and live interactive guide',
-    caption: '23 structured modules & 71 guided lessons with visual diagrams and live practice cursor.',
+    alt: 'Quillvibe Academy full-page two-pane book writing course workspace',
+    caption: 'Structured book writing modules with interactive diagrams and guided lesson checkpoints.',
   },
 };
 
@@ -48,9 +48,72 @@ const INSTALL_CMD_UNIX = 'curl -fsSL https://raw.githubusercontent.com/jhonrey-c
 
 let activePreviewTab: PreviewTabId = 'editor';
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
 /**
- * Editorial open-source landing page served at https://quillvibe.jhonrey.com/ on the web runtime.
- * Grounded strictly in the published README specification with classic author typography.
+ * Quintic ease-out smooth anchor scroll that cancels immediately if the user
+ * grabs the scrollbar, turns the mouse wheel, or touches the screen.
+ */
+function smoothScrollToTarget(scroller: HTMLElement, target: HTMLElement, headerHeight = 64): void {
+  const scrollerRect = scroller.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const destination = Math.max(
+    0,
+    scroller.scrollTop + (targetRect.top - scrollerRect.top) - headerHeight,
+  );
+
+  if (prefersReducedMotion()) {
+    scroller.scrollTop = destination;
+    return;
+  }
+
+  const start = scroller.scrollTop;
+  const delta = destination - start;
+  if (Math.abs(delta) < 2) {
+    scroller.scrollTop = destination;
+    return;
+  }
+
+  const duration = Math.min(540, Math.max(300, Math.abs(delta) * 0.28));
+  let startTime = 0;
+  let rafId = 0;
+  let cancelled = false;
+
+  const cancel = () => {
+    cancelled = true;
+    if (rafId) cancelAnimationFrame(rafId);
+    scroller.removeEventListener('wheel', cancel);
+    scroller.removeEventListener('touchstart', cancel);
+    scroller.removeEventListener('pointerdown', cancel);
+  };
+
+  scroller.addEventListener('wheel', cancel, { passive: true, once: true });
+  scroller.addEventListener('touchstart', cancel, { passive: true, once: true });
+  scroller.addEventListener('pointerdown', cancel, { passive: true, once: true });
+
+  const step = (now: number) => {
+    if (cancelled) return;
+    if (!startTime) startTime = now;
+    const elapsed = Math.min(1, (now - startTime) / duration);
+    const eased = 1 - Math.pow(1 - elapsed, 5);
+    scroller.scrollTop = start + delta * eased;
+    if (elapsed < 1) {
+      rafId = requestAnimationFrame(step);
+    } else {
+      cancel();
+    }
+  };
+
+  rafId = requestAnimationFrame(step);
+}
+
+/**
+ * Editorial open-source landing page for Quillvibe on the web runtime.
  */
 export function renderLandingPageView(
   container: HTMLElement,
@@ -59,46 +122,21 @@ export function renderLandingPageView(
 ): void {
   clearNode(container);
 
-  const curState = getState();
   const courseSummary = getCourseCompletionSummary();
   const totalLessons = courseSummary.total;
   const totalModules = COURSE_MODULES.length;
 
   const openStudio = () => {
-    let seen = false;
-    try {
-      seen = window.localStorage.getItem('quillvibe.splashSeen.v2') === '1';
-    } catch {
-      seen = true;
-    }
-    if (!seen) {
-      actions.setState({ activeView: 'editor' }, true);
-      return;
-    }
     actions.setState({ activeView: 'editor' }, true);
   };
 
-  // Header
-  const themeBtn = el(
-    'button',
-    {
-      className: 'bv-btn bv-btn-icon',
-      attrs: {
-        type: 'button',
-        'aria-label': `Switch Theme (${curState.settings.appTheme})`,
-        title: 'Switch Theme: Match Device, Ivory, Parchment, Obsidian',
-      },
-      on: {
-        click: () => {
-          const order: AppThemeId[] = ['system', 'ivory', 'parchment', 'obsidian'];
-          const now = getState().settings.appTheme;
-          const next = order[(order.indexOf(now) + 1) % order.length];
-          actions.updateSettings({ appTheme: next });
-        },
-      },
-    },
-    createMorphThemeIcon(curState.settings.appTheme, 17),
-  );
+  const page = el('div', { className: 'qv-landing-page' });
+  const scrollToSection = (sectionId: string) => {
+    const target = document.getElementById(sectionId);
+    if (target) smoothScrollToTarget(page, target, 68);
+  };
+
+  const themeBtn = createAppThemeButton(actions, 16);
 
   const searchBtn = el(
     'button',
@@ -108,14 +146,11 @@ export function renderLandingPageView(
       on: { click: () => openUniversalSearch(actions, getState) },
     },
     icon('search', 14),
-    el('span', { className: 'qv-landing-search-text', text: 'Search…' }),
+    el('span', { className: 'qv-landing-search-text', text: 'Search' }),
     el('kbd', { className: 'qv-landing-kbd', text: 'Ctrl+K' }),
   );
 
-  const scrollToSection = (sectionId: string) => {
-    const target = document.getElementById(sectionId);
-    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  const scrollProgressLine = el('div', { className: 'qv-landing-scroll-progress' });
 
   const header = el(
     'header',
@@ -135,7 +170,7 @@ export function renderLandingPageView(
             },
           },
         },
-        quillvibeLogo(24),
+        quillvibeLogo(22),
         el('span', { className: 'qv-landing-brand-name', text: 'Quillvibe' }),
       ),
       el(
@@ -143,15 +178,9 @@ export function renderLandingPageView(
         { className: 'qv-landing-nav', attrs: { 'aria-label': 'Primary Navigation' } },
         el('button', {
           className: 'qv-landing-nav-link',
-          text: 'Why Quillvibe',
+          text: 'Studio',
           attrs: { type: 'button' },
-          on: { click: () => scrollToSection('qv-landing-why') },
-        }),
-        el('button', {
-          className: 'qv-landing-nav-link',
-          text: 'Layouts',
-          attrs: { type: 'button' },
-          on: { click: () => scrollToSection('qv-landing-layouts') },
+          on: { click: () => scrollToSection('qv-landing-studio') },
         }),
         el('button', {
           className: 'qv-landing-nav-link',
@@ -167,13 +196,13 @@ export function renderLandingPageView(
         }),
         el('button', {
           className: 'qv-landing-nav-link',
-          text: 'Academy',
+          text: 'Course',
           attrs: { type: 'button' },
           on: { click: () => actions.setState({ activeView: 'course' }, true) },
         }),
         el('button', {
           className: 'qv-landing-nav-link',
-          text: 'Help & FAQ',
+          text: 'Help',
           attrs: { type: 'button' },
           on: { click: () => actions.setState({ activeView: 'help' }, true) },
         }),
@@ -190,19 +219,21 @@ export function renderLandingPageView(
             attrs: { type: 'button' },
             on: { click: openStudio },
           },
-          icon('quill', 14),
           'Open Studio',
         ),
       ),
     ),
+    scrollProgressLine,
   );
 
-  // Showcase Preview Block
+  // Interactive Product Stage
   const previewImg = el('img', {
     className: 'qv-landing-preview-img',
     attrs: {
       src: PREVIEW_ITEMS[activePreviewTab].src,
       alt: PREVIEW_ITEMS[activePreviewTab].alt,
+      width: '1280',
+      height: '720',
     },
   });
   const previewCaption = el('span', {
@@ -211,6 +242,7 @@ export function renderLandingPageView(
   });
 
   const previewOrder: PreviewTabId[] = ['editor', 'split', 'graph', 'cover', 'academy'];
+  let swapTimer: number | null = null;
   const showcaseButtons: HTMLButtonElement[] = previewOrder.map((tabKey) => {
     const item = PREVIEW_ITEMS[tabKey];
     const btn = el('button', {
@@ -219,10 +251,12 @@ export function renderLandingPageView(
       attrs: {
         type: 'button',
         role: 'tab',
+        'data-label': item.label,
         'aria-selected': String(activePreviewTab === tabKey),
       },
       on: {
         click: () => {
+          if (activePreviewTab === tabKey) return;
           activePreviewTab = tabKey;
           for (let i = 0; i < showcaseButtons.length; i++) {
             const b = showcaseButtons[i];
@@ -231,14 +265,37 @@ export function renderLandingPageView(
             b.classList.toggle('is-active', active);
             b.setAttribute('aria-selected', String(active));
           }
-          previewImg.src = item.src;
-          previewImg.alt = item.alt;
           previewCaption.textContent = item.caption;
+          if (prefersReducedMotion()) {
+            previewImg.src = item.src;
+            previewImg.alt = item.alt;
+            return;
+          }
+          if (swapTimer !== null) window.clearTimeout(swapTimer);
+          previewImg.classList.add('is-swapping');
+          swapTimer = window.setTimeout(() => {
+            previewImg.src = item.src;
+            previewImg.alt = item.alt;
+            previewImg.classList.remove('is-swapping');
+            swapTimer = null;
+          }, 110);
         },
       },
     });
     return btn;
   });
+
+  const showcaseEl = el(
+    'figure',
+    { className: 'qv-landing-showcase' },
+    el(
+      'div',
+      { className: 'qv-landing-showcase-bar', attrs: { role: 'tablist', 'aria-label': 'Workspace Previews' } },
+      el('div', { className: 'qv-landing-tab-group' }, ...showcaseButtons),
+      previewCaption,
+    ),
+    el('div', { className: 'qv-landing-showcase-frame' }, previewImg),
+  );
 
   const heroSection = el(
     'section',
@@ -251,11 +308,11 @@ export function renderLandingPageView(
         { className: 'qv-landing-hero-copy' },
         el('h1', {
           className: 'qv-landing-hero-title',
-          text: 'Write chapters, build your world, mark proofs, design your cover, and export for print in a single book file.',
+          text: 'A writing studio built for complete books.',
         }),
         el('p', {
           className: 'qv-landing-hero-lead',
-          text: 'Quillvibe is a free, open-source book writing application built for long-form authors. Open a blank book or follow the built-in quick guide straight in your browser with no account required, save your work in protected .qv archives, or install the desktop edition for Windows, macOS, and Linux.',
+          text: 'Draft chapters, structure story bibles, mark proofs with copyediting symbols, compile trade interiors, and design print covers inside one local .qv file with zero accounts.',
         }),
         el(
           'div',
@@ -267,18 +324,7 @@ export function renderLandingPageView(
               attrs: { type: 'button' },
               on: { click: openStudio },
             },
-            icon('quill', 15),
             'Start Writing in Browser',
-          ),
-          el(
-            'button',
-            {
-              className: 'bv-btn qv-landing-cta-lg',
-              attrs: { type: 'button' },
-              on: { click: () => actions.setState({ activeView: 'course' }, true) },
-            },
-            icon('course', 15),
-            `Read the Free Course (${totalModules} Modules)`,
           ),
           el(
             'button',
@@ -287,122 +333,88 @@ export function renderLandingPageView(
               attrs: { type: 'button' },
               on: { click: () => scrollToSection('qv-landing-download') },
             },
-            icon('download', 15),
-            'Desktop Releases',
+            `Download Desktop (v${APP_VERSION})`,
           ),
         ),
       ),
+      showcaseEl,
+    ),
+  );
+
+  // Split Sticky Editorial Capabilities Section (replaces generic 3-card grids)
+  const capabilityRows: Array<[string, string, string]> = [
+    [
+      'Three Workspace Layouts',
+      'Focused, Editorial & Full Studio',
+      'Switch workspaces anytime from the bottom bar. Focused shows only the binder and paper sheet; Editorial opens Corkboard, Outline Ledger, Proofread, and Typeset; Full Studio unlocks Story Bible, Story Graph, and Cover Studio without hiding or deleting work.',
+    ],
+    [
+      'Editorial Copyediting',
+      '15 Proofreading Marks & Split Diff',
+      'Highlight any passage in Proofread mode and right-click to place carets, deletions, transpositions, or queries. Inspect changes in Clean Preview, compare snapshots side by side in Split Diff, and lock completed chapters against accidental edits.',
+    ],
+    [
+      'Worldbuilding & Plotting',
+      'Story Bible & Dual-Mode Graph',
+      'Tag characters, locations, and lore inline via [[wikilinks]] and #tags. Review relationships on an orthogonal 90-degree Storyboard or live Force Graph synced directly with active scenes.',
+    ],
+    [
+      'Print & Cover Output',
+      'Interior Trim Typeset & Cover Studio',
+      'Preview US/UK trade trim dimensions (5x8, 5.5x8.5, 6x9, 8.5x11) with custom .ttf/.otf typography and drop caps. Build front, spine, back, and dust-jacket wraps with alignment guides, Vector SVG, EPUB 3, and Print PDF export.',
+    ],
+  ];
+
+  const studioSection = el(
+    'section',
+    { className: 'qv-landing-section qv-landing-bordered', id: 'qv-landing-studio' },
+    el(
+      'div',
+      { className: 'qv-landing-container qv-landing-split-layout' },
       el(
         'div',
-        { className: 'qv-landing-showcase' },
+        { className: 'qv-landing-split-sticky' },
+        el('h2', { text: 'One workspace from first outline to finished book.' }),
+        el('p', {
+          text: 'Every tool operates offline on local files. Write with spellcheck off by default, insert wrapped illustrations cleanly, and switch tabs or desktop windows without leaving the application.',
+        }),
         el(
-          'div',
-          { className: 'qv-landing-showcase-bar', attrs: { role: 'tablist', 'aria-label': 'Workspace Previews' } },
-          ...showcaseButtons,
-          previewCaption,
+          'button',
+          {
+            className: 'bv-btn qv-landing-inline-action',
+            attrs: { type: 'button' },
+            on: { click: () => actions.setState({ activeView: 'course' }, true) },
+          },
+          `Explore Academy (${totalModules} Modules)`,
         ),
-        el('div', { className: 'qv-landing-showcase-frame' }, previewImg),
-      ),
-    ),
-  );
-
-  // Section 1: Why Keep Everything in One Place
-  const whyCards: Array<[string, string]> = [
-    [
-      'No account & spellcheck off by default',
-      'Open a blank book immediately without creating an account. Spellcheck red underlines stay off while drafting (toggleable in Settings) and Undo/Redo (Ctrl+Z / Ctrl+Y) works across every studio.',
-    ],
-    [
-      '15 traditional proofreading marks',
-      'Right-click any highlighted passage in Proofread mode to insert carets, deletions, transpositions, or queries. Toggle Clean Preview anytime, keep revision snapshots, and lock settled chapters against accidental edits.',
-    ],
-    [
-      'Inline illustrations, text wrap & background removal',
-      'Drag PNG, JPEG, or WebP artwork right onto your scene page, wrap prose around images (Wrap Left, Right, Top & Bottom, Inline, Behind), align magnetically, or strip solid backgrounds offline.',
-    ],
-  ];
-
-  const whySection = el(
-    'section',
-    { className: 'qv-landing-section qv-landing-bordered', id: 'qv-landing-why' },
-    el(
-      'div',
-      { className: 'qv-landing-container' },
-      el(
-        'div',
-        { className: 'qv-landing-section-head' },
-        el('h2', { text: 'Why keep an entire book in one workspace' }),
-        el('p', {
-          text: 'Most writers split a single book across five separate apps: word processors for chapters, spreadsheets for timelines, note wikis for characters, image editors for covers, and converters for eBooks. Quillvibe keeps every stage in one local .qv project file.',
-        }),
       ),
       el(
         'div',
-        { className: 'qv-landing-grid-3' },
-        ...whyCards.map(([title, body]) =>
+        { className: 'qv-landing-spec-list' },
+        ...capabilityRows.map(([scope, title, body]) =>
           el(
-            'article',
-            { className: 'qv-landing-col' },
-            el('h3', { text: title }),
-            el('p', { text: body }),
+            'div',
+            { className: 'qv-landing-spec-row' },
+            el('div', { className: 'qv-landing-spec-key', text: scope }),
+            el(
+              'div',
+              { className: 'qv-landing-spec-val' },
+              el('h3', { text: title }),
+              el('p', { text: body }),
+            ),
           ),
         ),
       ),
     ),
   );
 
-  // Section 2: Three Workspace Layouts (from README section 3)
-  const layoutCards: Array<[string, string]> = [
-    [
-      'Focused',
-      'Shows only your Manuscript Binder, Ivory / Parchment / Obsidian paper sheet, formatting tools, and clean exports (.qv, .pdf, .epub, .docx, .md) for distraction-free drafting.',
-    ],
-    [
-      'Editorial',
-      'Adds Corkboard scene cards with word targets, sortable Outline Ledger tables with CSV export, 15 proofreading marks, and Print PDF / EPUB 3 trade trim typesetting.',
-    ],
-    [
-      'Full Studio',
-      'Adds Story Bible (Characters, Locations, Lore, custom shelves), Dual-Mode Story Graph with Auto-Sync Book, Book Cover Studio (front, spine, back & flaps), Collaboration, and .qvext add-ons.',
-    ],
-  ];
-
-  const layoutsSection = el(
-    'section',
-    { className: 'qv-landing-section qv-landing-bordered', id: 'qv-landing-layouts' },
-    el(
-      'div',
-      { className: 'qv-landing-container' },
-      el(
-        'div',
-        { className: 'qv-landing-section-head' },
-        el('h2', { text: 'Three Workspace Layouts that adapt without deleting work' }),
-        el('p', {
-          text: 'Switch between Focused, Editorial, and Full Studio in one click from the status bar. Changing layouts only shows or hides surrounding panels; your Story Bible, notes, and cover layers stay intact.',
-        }),
-      ),
-      el(
-        'div',
-        { className: 'qv-landing-grid-3' },
-        ...layoutCards.map(([title, body]) =>
-          el(
-            'article',
-            { className: 'qv-landing-col' },
-            el('h3', { text: title }),
-            el('p', { text: body }),
-          ),
-        ),
-      ),
-    ),
-  );
-
-  // Section 3: Native Protected File Formats (from README section 6)
+  // Clean 1px-Ruled File Format Table
   const formats: Array<[string, string, string]> = [
-    ['.qv', 'Complete Book Workspace', 'Saves manuscript chapters, Story Bible, Story Graph, cover design, proofread marks, snapshots, Author Key & Copyright Seal.'],
-    ['.qvbible', 'Story Bible Notes', 'Extracts and merges Characters, Locations, Lore, and custom categories cleanly between series books.'],
-    ['.qvscene', 'Single Scene Draft', 'Shares or backs up a single scene complete with revision snapshots and copyediting markup.'],
-    ['.qvstyle', 'Typeset & Paper Preset', 'Captures trim size, custom typography, drop caps, smart quotes, margins, and paper theme for consistent editions.'],
-    ['.qvdesign', 'Cover Design Package', 'Stores Book Cover Studio layers, vector paths, blend modes, drafts, and review pins without exposing manuscript prose.'],
+    ['.qv', 'Complete Book Archive', 'Chapters, scenes, Story Bible, Story Graph, cover wrap, proofreading marks, snapshots, Author Key, and Copyright Seal.'],
+    ['.qvbible', 'Story Bible Archive', 'Portable Characters, Locations, Lore, and custom categories merged cleanly across series books.'],
+    ['.qvscene', 'Single Scene Package', 'Standalone scene draft bundled with revision history and copyediting markup.'],
+    ['.qvstyle', 'Typeset Preset', 'Trim size, font stack, drop caps, indentation, smart punctuation, and paper theme configuration.'],
+    ['.qvdesign', 'Cover Design Package', 'Front, spine, back, and dust-jacket layers, blend modes, and review pins without manuscript text.'],
   ];
 
   const formatsSection = el(
@@ -414,32 +426,28 @@ export function renderLandingPageView(
       el(
         'div',
         { className: 'qv-landing-section-head' },
-        el('h2', { text: 'Protected formats, Author Keys & open exports' }),
+        el('h2', { text: 'Local file formats with open exports' }),
         el('p', {
-          text: 'Native Quillvibe files support optional password encryption while exporting standard .pdf, .epub, .docx, .md, .rtf, and Vector SVG anytime. Older .quillvibe and .bookvibe files import cleanly too.',
+          text: 'Native Quillvibe packages support optional password encryption alongside standard .pdf, .epub, .docx, .md, .rtf, and Vector SVG exports.',
         }),
       ),
       el(
         'div',
-        { className: 'qv-landing-format-grid' },
+        { className: 'qv-landing-ledger', attrs: { role: 'table', 'aria-label': 'Quillvibe file formats' } },
         ...formats.map(([ext, name, desc]) =>
           el(
             'div',
-            { className: 'qv-landing-format-item' },
-            el('code', { className: 'qv-landing-format-code', text: ext }),
-            el(
-              'div',
-              { className: 'qv-landing-format-body' },
-              el('strong', { text: name }),
-              el('p', { text: desc }),
-            ),
+            { className: 'qv-landing-ledger-row', attrs: { role: 'row' } },
+            el('code', { className: 'qv-landing-ledger-ext', text: ext, attrs: { role: 'cell' } }),
+            el('strong', { className: 'qv-landing-ledger-name', text: name, attrs: { role: 'cell' } }),
+            el('p', { className: 'qv-landing-ledger-desc', text: desc, attrs: { role: 'cell' } }),
           ),
         ),
       ),
     ),
   );
 
-  // Section 4: Browser vs Desktop App + Releases + Academy
+  // Platforms & Desktop Download
   const copyCmd = (cmd: string, label: string) => {
     void navigator.clipboard?.writeText(cmd).then(
       () => actions.notify(`Copied ${label} install command.`),
@@ -456,9 +464,9 @@ export function renderLandingPageView(
       el(
         'div',
         { className: 'qv-landing-section-head' },
-        el('h2', { text: 'Write in your browser, install on Chromebook, Windows, macOS & Linux' }),
+        el('h2', { text: 'Run in your browser or install on desktop' }),
         el('p', {
-          text: 'Install Quillvibe as an offline Web App on Chromebook (ChromeOS), Android, and iPadOS, or download native installers for Windows, macOS Universal, and Linux (x64 & ARM64) with direct disk auto-save, stacked book tabs, F11 focus mode, Pro Vector Cover tools, and local Wi-Fi/Bluetooth sharing.',
+          text: 'Install Quillvibe as an offline Web App on ChromeOS, iPadOS, and Android, or download native installers for Windows, macOS Universal, and Linux x64/ARM64.',
         }),
       ),
       el(
@@ -467,9 +475,9 @@ export function renderLandingPageView(
         el(
           'article',
           { className: 'qv-landing-card' },
-          el('h3', { text: 'Browser & Chromebook App (Offline PWA)' }),
+          el('h3', { text: 'Browser & Chromebook App' }),
           el('p', {
-            text: 'Run or install Quillvibe in Chrome, Edge, Firefox, or Safari on Chromebook (ChromeOS), Android, iPadOS, and any other desktop or tablet OS. Click Save to download a local .qv backup when finishing a session.',
+            text: 'Run offline in Chrome, Edge, Firefox, or Safari on desktop, ChromeOS, iPadOS, and Android. Click Save to write a local .qv backup directly to your disk.',
           }),
           el(
             'div',
@@ -482,7 +490,7 @@ export function renderLandingPageView(
             }),
             el('button', {
               className: 'bv-btn',
-              text: 'Browse Help & FAQ',
+              text: 'Help & FAQ',
               attrs: { type: 'button' },
               on: { click: () => actions.setState({ activeView: 'help' }, true) },
             }),
@@ -491,9 +499,9 @@ export function renderLandingPageView(
         el(
           'article',
           { className: 'qv-landing-card' },
-          el('h3', { text: `Desktop App for Windows, macOS & Linux x64/ARM64 (v${APP_VERSION})` }),
+          el('h3', { text: `Desktop Edition v${APP_VERSION}` }),
           el('p', {
-            text: 'Adds automatic local saving, stacked book tabs, F11 fullscreen clock and sprint bar, OS file-association double-click launch, Pro Vector Cover tools, and in-app updates.',
+            text: 'Native Tauri builds for Windows, macOS, and Linux with direct filesystem auto-save, multi-window book tabs, F11 immersive HUD, and Pro Vector Cover tools.',
           }),
           el(
             'div',
@@ -522,7 +530,7 @@ export function renderLandingPageView(
             { className: 'qv-landing-card-actions' },
             el('a', {
               className: 'bv-btn bv-btn-primary',
-              text: 'Download on GitHub Releases',
+              text: 'GitHub Releases',
               attrs: {
                 href: 'https://github.com/jhonrey-com/Quillvibe/releases/latest',
                 target: '_blank',
@@ -531,7 +539,7 @@ export function renderLandingPageView(
             }),
             el('button', {
               className: 'bv-btn',
-              text: 'Developer (.qvext) Portal',
+              text: 'Developer (.qvext)',
               attrs: { type: 'button' },
               on: { click: () => actions.setState({ activeView: 'developer' }, true) },
             }),
@@ -541,52 +549,48 @@ export function renderLandingPageView(
     ),
   );
 
-  // Section 5: Academy + MIT Open Source & Sponsors
+  // Open Source & Academy Band
   const communitySection = el(
     'section',
     { className: 'qv-landing-section qv-landing-bordered', id: 'qv-landing-academy' },
     el(
       'div',
-      { className: 'qv-landing-container' },
+      { className: 'qv-landing-container qv-landing-sponsor-band' },
       el(
         'div',
-        { className: 'qv-landing-sponsor-box' },
-        el(
-          'div',
-          { className: 'qv-landing-sponsor-copy' },
-          el('h2', { text: `Free Academy (${totalModules} modules, ${totalLessons} lessons), supported by sponsors` }),
-          el('p', {
-            text: 'All writing workspaces, proofreading marks, Story Bible, Cover Studio, and print/eBook exports are available under the MIT License with zero paywalls. Learn step by step inside the built-in course or support releases on GitHub Sponsors.',
-          }),
-        ),
-        el(
-          'div',
-          { className: 'qv-landing-sponsor-actions' },
-          el('button', {
-            className: 'bv-btn bv-btn-primary',
-            text: 'Explore Quillvibe Academy',
-            attrs: { type: 'button' },
-            on: { click: () => actions.setState({ activeView: 'course' }, true) },
-          }),
-          el('a', {
-            className: 'bv-btn',
-            text: 'Sponsor on GitHub',
-            attrs: {
-              href: 'https://github.com/sponsors/jhonrey-com',
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            },
-          }),
-          el('a', {
-            className: 'bv-btn',
-            text: 'View GitHub Source',
-            attrs: {
-              href: 'https://github.com/jhonrey-com/Quillvibe',
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            },
-          }),
-        ),
+        { className: 'qv-landing-sponsor-copy' },
+        el('h2', { text: `MIT open source with ${totalModules} built-in writing modules` }),
+        el('p', {
+          text: `Follow all ${totalLessons} interactive lessons inside Quillvibe Academy or support ongoing desktop and web releases on GitHub Sponsors.`,
+        }),
+      ),
+      el(
+        'div',
+        { className: 'qv-landing-sponsor-actions' },
+        el('button', {
+          className: 'bv-btn bv-btn-primary',
+          text: 'Open Academy',
+          attrs: { type: 'button' },
+          on: { click: () => actions.setState({ activeView: 'course' }, true) },
+        }),
+        el('a', {
+          className: 'bv-btn',
+          text: 'Sponsor on GitHub',
+          attrs: {
+            href: 'https://github.com/sponsors/jhonrey-com',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          },
+        }),
+        el('a', {
+          className: 'bv-btn',
+          text: 'Source Code',
+          attrs: {
+            href: 'https://github.com/jhonrey-com/Quillvibe',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          },
+        }),
       ),
     ),
   );
@@ -612,11 +616,11 @@ export function renderLandingPageView(
           ),
           el('p', {
             className: 'qv-landing-footer-desc',
-            text: 'Open-source book writing, Story Bible, proofreading, typesetting, and cover studio published under jhonrey.com & CXVRE Information Technology Services.',
+            text: 'Open-source book writing, Story Bible, copyediting, typesetting, and cover studio published under jhonrey.com & CXVRE Information Technology Services.',
           }),
           el('p', {
             className: 'qv-landing-footer-contact',
-            text: 'Support & inquiries: quillvibe@jhonrey.com | support@quillvibe.app',
+            text: 'Quillvibe support: quillvibe@jhonrey.com | General: contact@jhonrey.com',
           }),
         ),
         el(
@@ -641,29 +645,53 @@ export function renderLandingPageView(
           'div',
           { className: 'qv-landing-footer-col' },
           el('h4', { text: 'Open Source' }),
+          el('a', { text: 'jhonrey.com', attrs: { href: 'https://www.jhonrey.com/', target: '_blank', rel: 'noopener noreferrer' } }),
           el('a', { text: 'GitHub Repository', attrs: { href: 'https://github.com/jhonrey-com/Quillvibe', target: '_blank', rel: 'noopener noreferrer' } }),
           el('a', { text: 'Desktop Releases', attrs: { href: 'https://github.com/jhonrey-com/Quillvibe/releases/latest', target: '_blank', rel: 'noopener noreferrer' } }),
-          el('a', { text: 'Security Policy', attrs: { href: 'https://github.com/jhonrey-com/Quillvibe/blob/main/SECURITY.md', target: '_blank', rel: 'noopener noreferrer' } }),
           el('a', { text: 'Sponsor Development', attrs: { href: 'https://github.com/sponsors/jhonrey-com', target: '_blank', rel: 'noopener noreferrer' } }),
         ),
       ),
       el(
         'div',
         { className: 'qv-landing-footer-bottom' },
-        el('span', { text: '© 2026 CXVRE Information Technology Services. Published under jhonrey.com (MIT License)' }),
+        el('span', { text: '© 2026 CXVRE Information Technology Services. Published under jhonrey.com (MIT License).' }),
         el('span', { text: `v${APP_VERSION}` }),
       ),
     ),
   );
 
-  // Notice: button signature for footer col links uses el('button', opts), let's fix those with proper ElementOptions in case of type checking below!
-  void header;
-  const page = el(
-    'div',
-    { className: 'qv-landing-page' },
+  page.append(
     header,
-    el('main', { className: 'qv-landing-main' }, heroSection, whySection, layoutsSection, formatsSection, downloadSection, communitySection),
+    el('main', { className: 'qv-landing-main' }, heroSection, studioSection, formatsSection, downloadSection, communitySection),
     footer,
   );
   container.appendChild(page);
+
+  // GPU-composited smooth scroll progress + header elevation + subtle showcase parallax
+  let scrollRafPending = false;
+  const syncScrollVisuals = () => {
+    scrollRafPending = false;
+    const top = page.scrollTop;
+    const maxScroll = Math.max(1, page.scrollHeight - page.clientHeight);
+    const progress = Math.min(1, Math.max(0, top / maxScroll));
+    scrollProgressLine.style.transform = `scaleX(${progress.toFixed(4)})`;
+    header.classList.toggle('is-scrolled', top > 12);
+    if (!prefersReducedMotion()) {
+      const stageShift = Math.min(18, top * 0.045);
+      showcaseEl.style.transform = `translate3d(0, ${(-stageShift).toFixed(2)}px, 0)`;
+    } else {
+      showcaseEl.style.transform = 'none';
+    }
+  };
+
+  page.addEventListener(
+    'scroll',
+    () => {
+      if (scrollRafPending) return;
+      scrollRafPending = true;
+      requestAnimationFrame(syncScrollVisuals);
+    },
+    { passive: true },
+  );
+  syncScrollVisuals();
 }

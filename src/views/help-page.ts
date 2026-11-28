@@ -2,7 +2,7 @@ import type { AppActions } from '../core/app-context';
 import { isTauriRuntime } from '../core/bridge';
 import { QUILLVIBE_EXTENSIONS } from '../core/extensions';
 import { CONTROL_REFERENCE_ITEMS } from '../ui/controls-catalog';
-import { clearNode, el, icon, type IconName } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions, type IconName } from '../ui/dom';
 import { createAppThemeButton } from '../ui/theme-button';
 import { QUILLVIBE_ERROR_CATALOG } from '../ui/error-dialog';
 
@@ -213,6 +213,7 @@ export function setHelpPageArticle(articleId: string): void {
  * Calm two-pane Knowledge Base & FAQ workspace with collapsible accordions and category filtering.
  */
 export function renderHelpPageView(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, ['.qv-help-page']);
   clearNode(container);
 
   const q = helpSearchQuery.trim().toLowerCase();
@@ -484,54 +485,11 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
     );
   }
 
-  // Collapsible FAQ Accordions (only expanded items reveal bullet walls & screenshots)
+  // Collapsible FAQ Accordions (toggles cleanly in-place without re-rendering the page)
   if (filteredArticles.length > 0) {
     const faqList = el('div', { className: 'qv-faq-accordion-list' });
     for (const art of filteredArticles) {
-      const isOpen = Boolean(q) || expandedArticleIds.has(art.id);
-      const headerBtn = el(
-        'button',
-        {
-          className: `qv-faq-accordion-trigger${isOpen ? ' is-open' : ''}`,
-          attrs: { type: 'button', 'aria-expanded': String(isOpen) },
-          on: {
-            click: () => {
-              if (expandedArticleIds.has(art.id)) {
-                expandedArticleIds.delete(art.id);
-              } else {
-                expandedArticleIds.add(art.id);
-              }
-              renderHelpPageView(container, actions);
-            },
-          },
-        },
-        el(
-          'div',
-          { className: 'qv-faq-trigger-copy' },
-          el(
-            'div',
-            { className: 'qv-faq-trigger-meta' },
-            el('span', { className: 'bv-mono-tag', text: art.category, style: { color: 'var(--accent-amber)' } }),
-            el('span', {
-              className: 'bv-mono-tag',
-              text: art.platform === 'both' ? 'Web & Desktop' : art.platform === 'desktop' ? 'Desktop App' : 'Website',
-            }),
-          ),
-          el('h2', { className: 'qv-faq-trigger-title', text: art.title }),
-          el('p', { className: 'qv-faq-trigger-summary', text: art.summary }),
-        ),
-        el('span', {
-          className: 'qv-faq-chevron',
-          text: isOpen ? '−' : '+',
-        }),
-      );
-
-      const itemCard = el('article', {
-        className: `qv-faq-accordion${isOpen ? ' is-open' : ''}`,
-        id: `help-${art.id}`,
-      }, headerBtn);
-
-      if (isOpen) {
+      const buildArticleBody = () => {
         const list = el('ul', { className: 'qv-help-detail-list' });
         for (const line of art.details) {
           list.appendChild(el('li', { text: line }));
@@ -561,11 +519,66 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
               el('figcaption', { text: art.screenshot.caption }),
             )
             : null;
-        itemCard.appendChild(
-          el('div', { className: 'qv-faq-accordion-body' }, list, figure),
-        );
-      }
+        return el('div', { className: 'qv-faq-accordion-body' }, list, figure);
+      };
 
+      const isOpen = Boolean(q) || expandedArticleIds.has(art.id);
+      const chevronEl = el('span', {
+        className: 'qv-faq-chevron',
+        text: isOpen ? '−' : '+',
+      });
+      let bodyEl: HTMLElement | null = isOpen ? buildArticleBody() : null;
+      const itemCard = el('article', {
+        className: `qv-faq-accordion${isOpen ? ' is-open' : ''}`,
+        id: `help-${art.id}`,
+      });
+      const headerBtn = el(
+        'button',
+        {
+          className: `qv-faq-accordion-trigger${isOpen ? ' is-open' : ''}`,
+          attrs: { type: 'button', 'aria-expanded': String(isOpen) },
+          on: {
+            click: () => {
+              const nextOpen = !itemCard.classList.contains('is-open');
+              if (nextOpen) {
+                expandedArticleIds.add(art.id);
+                if (!bodyEl) {
+                  bodyEl = buildArticleBody();
+                  itemCard.appendChild(bodyEl);
+                }
+              } else {
+                expandedArticleIds.delete(art.id);
+                if (bodyEl) {
+                  bodyEl.remove();
+                  bodyEl = null;
+                }
+              }
+              itemCard.classList.toggle('is-open', nextOpen);
+              headerBtn.classList.toggle('is-open', nextOpen);
+              headerBtn.setAttribute('aria-expanded', String(nextOpen));
+              chevronEl.textContent = nextOpen ? '−' : '+';
+            },
+          },
+        },
+        el(
+          'div',
+          { className: 'qv-faq-trigger-copy' },
+          el(
+            'div',
+            { className: 'qv-faq-trigger-meta' },
+            el('span', { className: 'qv-help-meta-cat', text: art.category }),
+            el('span', {
+              className: 'bv-mono-tag',
+              text: art.platform === 'both' ? 'Web & Desktop' : art.platform === 'desktop' ? 'Desktop App' : 'Website',
+            }),
+          ),
+          el('h2', { className: 'qv-faq-trigger-title', text: art.title }),
+          el('p', { className: 'qv-faq-trigger-summary', text: art.summary }),
+        ),
+        chevronEl,
+      );
+
+      itemCard.append(headerBtn, ...(bodyEl ? [bodyEl] : []));
       faqList.appendChild(itemCard);
     }
 
@@ -583,11 +596,25 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
     );
   }
 
-  // Collapsible Error Reference List
+  // Collapsible Error Reference List (in-place toggle)
   if (filteredErrors.length > 0) {
     const errList = el('div', { className: 'qv-faq-accordion-list' });
     for (const err of filteredErrors) {
+      const buildErrBody = () =>
+        el(
+          'div',
+          { className: 'qv-faq-accordion-body' },
+          el('p', { className: 'qv-faq-err-line', text: `Why it happens: ${err.cause}` }),
+          el('p', { className: 'qv-faq-err-fix', text: `How to fix: ${err.fix}` }),
+        );
+
       const isOpen = Boolean(q) || expandedErrorCodes.has(err.code);
+      const chevronEl = el('span', { className: 'qv-faq-chevron', text: isOpen ? '−' : '+' });
+      let bodyEl: HTMLElement | null = isOpen ? buildErrBody() : null;
+      const errCard = el('div', {
+        className: `qv-faq-accordion${isOpen ? ' is-open' : ''}`,
+        id: `err-${err.code.toLowerCase()}`,
+      });
       const trigger = el(
         'button',
         {
@@ -595,12 +622,24 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
           attrs: { type: 'button', 'aria-expanded': String(isOpen) },
           on: {
             click: () => {
-              if (expandedErrorCodes.has(err.code)) {
-                expandedErrorCodes.delete(err.code);
-              } else {
+              const nextOpen = !errCard.classList.contains('is-open');
+              if (nextOpen) {
                 expandedErrorCodes.add(err.code);
+                if (!bodyEl) {
+                  bodyEl = buildErrBody();
+                  errCard.appendChild(bodyEl);
+                }
+              } else {
+                expandedErrorCodes.delete(err.code);
+                if (bodyEl) {
+                  bodyEl.remove();
+                  bodyEl = null;
+                }
               }
-              renderHelpPageView(container, actions);
+              errCard.classList.toggle('is-open', nextOpen);
+              trigger.classList.toggle('is-open', nextOpen);
+              trigger.setAttribute('aria-expanded', String(nextOpen));
+              chevronEl.textContent = nextOpen ? '−' : '+';
             },
           },
         },
@@ -618,28 +657,10 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
           ),
           el('h3', { className: 'qv-faq-trigger-title', text: err.title }),
         ),
-        el('span', { className: 'qv-faq-chevron', text: isOpen ? '−' : '+' }),
+        chevronEl,
       );
 
-      const errCard = el(
-        'div',
-        {
-          className: `qv-faq-accordion${isOpen ? ' is-open' : ''}`,
-          id: `err-${err.code.toLowerCase()}`,
-        },
-        trigger,
-      );
-
-      if (isOpen) {
-        errCard.appendChild(
-          el(
-            'div',
-            { className: 'qv-faq-accordion-body' },
-            el('p', { className: 'qv-faq-err-line', text: `Why it happens: ${err.cause}` }),
-            el('p', { className: 'qv-faq-err-fix', text: `How to fix: ${err.fix}` }),
-          ),
-        );
-      }
+      errCard.append(trigger, ...(bodyEl ? [bodyEl] : []));
       errList.appendChild(errCard);
     }
 
@@ -653,11 +674,23 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
     );
   }
 
-  // Controls Reference (collapsible rows when browsing Controls & Shortcuts or searching)
+  // Controls Reference (in-place toggle)
   if (filteredControls.length > 0) {
     const ctrlList = el('div', { className: 'qv-faq-accordion-list' });
     for (const item of filteredControls) {
+      const buildCtrlBody = () =>
+        el(
+          'div',
+          { className: 'qv-faq-accordion-body' },
+          el('p', { className: 'qv-faq-err-fix', text: item.howToUse }),
+        );
+
       const isOpen = Boolean(q) || expandedControlIds.has(item.id);
+      const chevronEl = el('span', { className: 'qv-faq-chevron', text: isOpen ? '−' : '+' });
+      let bodyEl: HTMLElement | null = isOpen ? buildCtrlBody() : null;
+      const ctrlCard = el('div', {
+        className: `qv-faq-accordion${isOpen ? ' is-open' : ''}`,
+      });
       const trigger = el(
         'button',
         {
@@ -665,12 +698,24 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
           attrs: { type: 'button', 'aria-expanded': String(isOpen) },
           on: {
             click: () => {
-              if (expandedControlIds.has(item.id)) {
-                expandedControlIds.delete(item.id);
-              } else {
+              const nextOpen = !ctrlCard.classList.contains('is-open');
+              if (nextOpen) {
                 expandedControlIds.add(item.id);
+                if (!bodyEl) {
+                  bodyEl = buildCtrlBody();
+                  ctrlCard.appendChild(bodyEl);
+                }
+              } else {
+                expandedControlIds.delete(item.id);
+                if (bodyEl) {
+                  bodyEl.remove();
+                  bodyEl = null;
+                }
               }
-              renderHelpPageView(container, actions);
+              ctrlCard.classList.toggle('is-open', nextOpen);
+              trigger.classList.toggle('is-open', nextOpen);
+              trigger.setAttribute('aria-expanded', String(nextOpen));
+              chevronEl.textContent = nextOpen ? '−' : '+';
             },
           },
         },
@@ -686,23 +731,10 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
           el('h3', { className: 'qv-faq-trigger-title', text: item.name }),
           el('p', { className: 'qv-faq-trigger-summary', text: item.summary }),
         ),
-        el('span', { className: 'qv-faq-chevron', text: isOpen ? '−' : '+' }),
+        chevronEl,
       );
 
-      const ctrlCard = el(
-        'div',
-        { className: `qv-faq-accordion${isOpen ? ' is-open' : ''}` },
-        trigger,
-      );
-      if (isOpen) {
-        ctrlCard.appendChild(
-          el(
-            'div',
-            { className: 'qv-faq-accordion-body' },
-            el('p', { className: 'qv-faq-err-fix', text: item.howToUse }),
-          ),
-        );
-      }
+      ctrlCard.append(trigger, ...(bodyEl ? [bodyEl] : []));
       ctrlList.appendChild(ctrlCard);
     }
 
@@ -765,4 +797,5 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
       el('div', { className: 'qv-help-layout' }, categoryRail, mainColumn),
     ),
   );
+  restoreScroll();
 }

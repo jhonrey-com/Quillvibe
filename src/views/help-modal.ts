@@ -11,7 +11,7 @@ import {
   openInteractiveCourseDrawer,
   readCompletedCourseLessons,
 } from '../ui/course';
-import { clearNode, el, icon, type IconName } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions, type IconName } from '../ui/dom';
 import { createAppThemeButton } from '../ui/theme-button';
 import { ICON_DIRECTORY, type IconDirectoryEntry } from '../ui/icon-directory';
 
@@ -51,6 +51,7 @@ export function showHelpModal(actions: AppActions, initialTab: HelpTab = 'course
 }
 
 export function renderManualPageView(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, ['.qv-manual-page', '.qv-manual-page-content']);
   clearNode(container);
 
   let activeTab: HelpTab = currentManualTab;
@@ -824,4 +825,5 @@ const renderTabs = () => {
   container.appendChild(pageShell);
   renderTabs();
   renderBody();
+  restoreScroll();
 }

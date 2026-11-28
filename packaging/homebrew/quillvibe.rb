@@ -1,5 +1,5 @@
 cask "quillvibe" do
-  version "3.3.6"
+  version "3.3.7"
   sha256 :no_check
 
   url "https://github.com/jhonrey-com/Quillvibe/releases/download/v#{version}/Quillvibe_#{version}_universal.dmg"

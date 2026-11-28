@@ -23,7 +23,7 @@ import type {
   InstalledExtension,
   QuillvibePluginManifest,
 } from '../core/types';
-import { clearNode, el, icon, type IconName } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions, type IconName } from '../ui/dom';
 import { createAppThemeButton } from '../ui/theme-button';
 import { LiquidGlassControl } from '../ui/liquid-glass';
 import { TOOLTIP_CATALOG } from '../ui/tooltips-catalog';
@@ -837,6 +837,11 @@ export function renderExtensionsPageView(container: HTMLElement, actions: AppAct
     activeExtensionsPageGlass.destroy();
     activeExtensionsPageGlass = null;
   }
+  const restoreScroll = preserveScrollPositions(container, [
+    '.qv-settings-page',
+    '.qv-settings-sidebar-nav',
+    '.qv-settings-page-content',
+  ]);
   clearNode(container);
 
   const opts = pendingExtensionsPageOptions;
@@ -937,6 +942,7 @@ export function renderExtensionsPageView(container: HTMLElement, actions: AppAct
     },
     { onRender: renderSidebarTabs },
   );
+  restoreScroll();
 }
 
 export async function showExtensionsModal(

@@ -1,9 +1,10 @@
-import type { TypesetSubTab } from './app-context';
+import type { EditorSubMode, TypesetSubTab } from './app-context';
 import type { StudioViewId } from './types';
 
 export interface RouteMatch {
   view: StudioViewId;
   typesetSubTab?: TypesetSubTab;
+  editorSubMode?: EditorSubMode;
   showStartSplash: boolean;
   canonicalPath: string;
 }
@@ -27,11 +28,11 @@ const VIEW_TO_PATH: Record<StudioViewId, string> = {
 export function resolvePathToRoute(pathname: string, _isFirstWebVisit = false): RouteMatch {
   const clean = pathname.replace(/\/+$/, '').toLowerCase() || '/';
 
-  if (clean === '/' || clean === '/index.html') {
+  if (clean === '/' || clean === '/index.html' || clean === '/landing') {
     return { view: 'landing', showStartSplash: false, canonicalPath: '/' };
   }
   if (clean === '/start') {
-    return { view: 'editor', showStartSplash: true, canonicalPath: '/start' };
+    return { view: 'editor', editorSubMode: 'draft', showStartSplash: true, canonicalPath: '/start' };
   }
   if (clean === '/course' || clean.startsWith('/course/')) {
     return { view: 'course', showStartSplash: false, canonicalPath: '/course' };
@@ -51,8 +52,17 @@ export function resolvePathToRoute(pathname: string, _isFirstWebVisit = false): 
   if (clean === '/extensions' || clean.startsWith('/extensions/')) {
     return { view: 'extensions', showStartSplash: false, canonicalPath: '/extensions' };
   }
-  if (clean === '/write' || clean === '/editor' || clean === '/') {
-    return { view: 'editor', showStartSplash: false, canonicalPath: '/write' };
+  if (clean === '/write/proofread') {
+    return { view: 'editor', editorSubMode: 'proofread', showStartSplash: false, canonicalPath: '/write/proofread' };
+  }
+  if (clean === '/write/split') {
+    return { view: 'editor', editorSubMode: 'split', showStartSplash: false, canonicalPath: '/write/split' };
+  }
+  if (clean === '/write/diff') {
+    return { view: 'editor', editorSubMode: 'diff', showStartSplash: false, canonicalPath: '/write/diff' };
+  }
+  if (clean === '/write' || clean === '/editor') {
+    return { view: 'editor', editorSubMode: 'draft', showStartSplash: false, canonicalPath: '/write' };
   }
   if (clean === '/corkboard') {
     return { view: 'corkboard', showStartSplash: false, canonicalPath: '/corkboard' };
@@ -75,10 +85,20 @@ export function resolvePathToRoute(pathname: string, _isFirstWebVisit = false): 
   if (clean === '/studio' || clean === '/typeset') {
     return { view: 'typeset', typesetSubTab: 'interior', showStartSplash: false, canonicalPath: '/studio' };
   }
-  return { view: 'editor', showStartSplash: false, canonicalPath: '/write' };
+  return { view: 'editor', editorSubMode: 'draft', showStartSplash: false, canonicalPath: '/write' };
 }
 
-export function routeForState(view: StudioViewId, typesetSubTab: TypesetSubTab = 'interior'): string {
+export function routeForState(
+  view: StudioViewId,
+  typesetSubTab: TypesetSubTab = 'interior',
+  editorSubMode: EditorSubMode = 'draft',
+): string {
+  if (view === 'editor') {
+    if (editorSubMode === 'proofread') return '/write/proofread';
+    if (editorSubMode === 'split') return '/write/split';
+    if (editorSubMode === 'diff') return '/write/diff';
+    return '/write';
+  }
   if (view === 'typeset') {
     if (typesetSubTab === 'cover') return '/studio/cover';
     if (typesetSubTab === 'publish') return '/studio/publish';

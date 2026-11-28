@@ -16,7 +16,7 @@ import {
   togglePartLock,
 } from '../core/manuscript';
 import { attachContextMenu } from '../ui/context-menu';
-import { clearNode, el, icon } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions } from '../ui/dom';
 
 function startInlineBinderRename(
   labelEl: HTMLElement,
@@ -70,6 +70,7 @@ function startInlineBinderRename(
 }
 
 export function renderBinder(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, ['.bv-binder-scroll']);
   clearNode(container);
   const state = actions.getState();
   const { project, activeSceneId } = state;
@@ -718,4 +719,5 @@ export function renderBinder(container: HTMLElement, actions: AppActions): void 
   }
 
   container.append(head, scroll);
+  restoreScroll();
 }

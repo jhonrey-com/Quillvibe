@@ -12,9 +12,10 @@ import {
   updateSceneInProject,
 } from '../core/manuscript';
 import type { CollaboratorRole, SceneStatus } from '../core/types';
-import { clearNode, el, icon } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions } from '../ui/dom';
 
 export function renderInspector(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, ['.bv-inspector-scroll']);
   clearNode(container);
   const state = actions.getState();
   const ctx = findSceneContext(state.project, state.activeSceneId);
@@ -437,4 +438,5 @@ export function renderInspector(container: HTMLElement, actions: AppActions): vo
 
   scroll.append(metaGroup, proofSummaryGroup, annotationsGroup, mentionsGroup, snapsGroup);
   container.append(head, scroll);
+  restoreScroll();
 }

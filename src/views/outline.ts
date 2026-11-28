@@ -14,7 +14,7 @@ import {
 } from '../core/manuscript';
 import type { SceneStatus } from '../core/types';
 import { attachContextMenu } from '../ui/context-menu';
-import { clearNode, el, icon } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions } from '../ui/dom';
 
 type OutlineSortMode = 'order' | 'words-desc' | 'words-asc' | 'status' | 'pov';
 
@@ -32,6 +32,7 @@ function escapeCsvCell(val: string | number): string {
 }
 
 export function renderOutlineView(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, ['.bv-scroll-view']);
   clearNode(container);
   const state = actions.getState();
   const project = state.project;
@@ -510,4 +511,5 @@ export function renderOutlineView(container: HTMLElement, actions: AppActions): 
 
   const wrap = el('div', { className: 'bv-scroll-view' }, ledgerHost);
   container.append(toolbar, wrap);
+  restoreScroll();
 }

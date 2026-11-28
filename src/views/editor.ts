@@ -1020,6 +1020,34 @@ export function renderEditorView(container: HTMLElement, actions: AppActions): v
         if (!canEditThisScene) return;
         actions.updateActiveSceneTextQuietly('title', sceneHeading.value);
       },
+      keydown: (ev) => {
+        if (ev.key !== 'Enter' || ev.isComposing) return;
+        ev.preventDefault();
+        const sheet = sceneHeading.closest('.bv-paper-sheet');
+        const richBody = sheet?.querySelector<HTMLElement>('.bv-prose-rich[contenteditable="true"]');
+        if (richBody) {
+          richBody.focus({ preventScroll: false });
+          const sel = window.getSelection();
+          if (sel) {
+            const range = document.createRange();
+            const firstText = richBody.firstChild;
+            if (firstText) {
+              range.setStart(firstText, 0);
+            } else {
+              range.setStart(richBody, 0);
+            }
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+          return;
+        }
+        const plainBody = sheet?.querySelector<HTMLTextAreaElement>('.bv-prose-textarea');
+        if (plainBody) {
+          plainBody.focus({ preventScroll: false });
+          plainBody.setSelectionRange(0, 0);
+        }
+      },
     },
   });
 

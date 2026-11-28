@@ -4,7 +4,7 @@ declare const __QUILLVIBE_COMMIT__: string | undefined;
 export const APP_VERSION: string =
   typeof __QUILLVIBE_VERSION__ !== 'undefined' && __QUILLVIBE_VERSION__.trim().length > 0
     ? __QUILLVIBE_VERSION__.trim()
-    : '3.3.2';
+    : '3.3.7';
 
 export const APP_COMMIT: string =
   typeof __QUILLVIBE_COMMIT__ !== 'undefined' && __QUILLVIBE_COMMIT__.trim().length > 0

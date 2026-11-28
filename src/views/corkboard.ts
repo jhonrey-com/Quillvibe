@@ -9,9 +9,10 @@ import {
 } from '../core/manuscript';
 import type { SceneStatus } from '../core/types';
 import { attachContextMenu } from '../ui/context-menu';
-import { clearNode, el, icon } from '../ui/dom';
+import { clearNode, el, icon, preserveScrollPositions } from '../ui/dom';
 
 export function renderCorkboardView(container: HTMLElement, actions: AppActions): void {
+  const restoreScroll = preserveScrollPositions(container, ['.bv-scroll-view']);
   clearNode(container);
   const state = actions.getState();
   const { project, activeSceneId } = state;
@@ -196,4 +197,5 @@ export function renderCorkboardView(container: HTMLElement, actions: AppActions)
   }
 
   container.appendChild(wrap);
+  restoreScroll();
 }

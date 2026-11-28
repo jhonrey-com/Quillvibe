@@ -8,7 +8,7 @@
 > **Free Book Writing Course:** <a href="https://quillvibe.jhonrey.com/course" target="_blank" rel="noopener noreferrer"><strong>Quillvibe Academy (23 Modules, 71 Lessons — Website &amp; Desktop Tracks)</strong></a>  
 > **Help Center, FAQ & Error Codes:** <a href="https://quillvibe.jhonrey.com/help" target="_blank" rel="noopener noreferrer"><strong><code>https://quillvibe.jhonrey.com/help</code></strong></a>  
 > **Developer Portal (`.qvext` Add-ons):** <a href="https://quillvibe.jhonrey.com/developer" target="_blank" rel="noopener noreferrer"><strong><code>https://quillvibe.jhonrey.com/developer</code></strong></a> *(Companion Extension Builder App Coming Soon)*  
-> **Download Desktop App (`v3.3.2` — Windows, Mac & Linux):** <a href="https://github.com/jhonrey-com/Quillvibe/releases/latest" target="_blank" rel="noopener noreferrer"><strong>GitHub Releases</strong></a>  
+> **Download Desktop App (`v3.3.7` — Windows, Mac & Linux):** <a href="https://github.com/jhonrey-com/Quillvibe/releases/latest" target="_blank" rel="noopener noreferrer"><strong>GitHub Releases</strong></a>  
 > **Contact, Feedback & Support:** Email <a href="mailto:quillvibe@jhonrey.com" target="_blank" rel="noopener noreferrer"><strong>quillvibe@jhonrey.com</strong></a>
 
 > [!NOTE]
@@ -49,7 +49,7 @@ Many writers end up juggling several separate programs—one for writing chapter
 - **Unified Draft Mode & built-in proofreading marks**: Toggle **Proofread** (15 copyediting symbols with Clean Preview and automatic snapshots) alongside a resizable **Split Reference** and **Revision Diff** pane directly inside Draft Mode without leaving your writing sheet.
 - **Ready for publishing & easy `.docx` migration**: Add your publisher name, ISBN, custom fonts (`.ttf`, `.otf`, `.woff`, `.woff2`), front/spine/back book covers, Origin Author Keys, Work Copyright Seals, verified co-author access, type-to-confirm safe book deletion, and export full **`.docx`** manuscripts (for standard word processors and cloud document editors), `.md`, `.rtf`, or `.json`.
 
-### Live Screenshots (`v3.3.2`)
+### Live Screenshots (`v3.3.7`)
 
 #### Website Edition (`quillvibe.jhonrey.com`)
 <p align="center">
@@ -89,7 +89,7 @@ Visit <a href="https://quillvibe.jhonrey.com/" target="_blank" rel="noopener nor
 - The browser version has fewer features than the installed desktop app. Remember to click **Save** to download a `.qv` backup file to your computer when you finish writing.
 
 ### Option B: Install on Windows, macOS, Linux, Chromebook & Other OS
-Download the latest installer from <a href="https://github.com/jhonrey-com/Quillvibe/releases/latest" target="_blank" rel="noopener noreferrer"><strong>GitHub Releases (<code>v3.3.2</code>)</strong></a> (published under **`jhonrey.com`**):
+Download the latest installer from <a href="https://github.com/jhonrey-com/Quillvibe/releases/latest" target="_blank" rel="noopener noreferrer"><strong>GitHub Releases (<code>v3.3.7</code>)</strong></a> (published under **`jhonrey.com`**):
 - **Windows:** `.msi` or branded `-setup.exe` (x64, with custom app icon & **Check for Updates** inside `/settings`)
 - **Mac (Apple Silicon & Intel):** Universal `.dmg` (`arm64` + `x86_64`)
 - **Linux (x64 & ARM64):** `.AppImage`, `.deb`, or `.rpm`

@@ -230,7 +230,7 @@ export async function testEnterpriseServer(
       return {
         ok: true,
         status: res.status,
-        message: `Connected (${check.isLocal ? 'Local Host' : 'TLS Verified'} · HTTP ${res.status})`,
+        message: `Connected (${check.isLocal ? 'Local Host' : 'TLS Verified'} — HTTP ${res.status})`,
       };
     }
     return {

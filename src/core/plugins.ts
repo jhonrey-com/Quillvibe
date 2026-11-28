@@ -36,37 +36,37 @@ export const EXTENSION_PERMISSION_INFO: Record<
   'read:active-scene': {
     title: 'Read Active Scene Text',
     dataAccessed: 'Reads only the title and prose of the scene currently open in the editor.',
-    riskLabel: 'Low · Scoped to 1 scene',
+    riskLabel: 'Low (Scoped to 1 scene)',
   },
   'read:manuscript': {
     title: 'Read Manuscript Chapters & Word Counts',
     dataAccessed: 'Reads scene headings, chapter hierarchy, and draft text across the active book.',
-    riskLabel: 'Medium · Active book only',
+    riskLabel: 'Medium (Active book only)',
   },
   'read:bible': {
     title: 'Read Story Bible Entries',
     dataAccessed: 'Reads character names, locations, and lore entries in the active book.',
-    riskLabel: 'Low · Worldbuilding entries',
+    riskLabel: 'Low (Worldbuilding entries)',
   },
   'propose:proofread-marks': {
     title: 'Propose Proofreading Marks',
     dataAccessed: 'Adds reviewable strikeout, replacement, and comment marks. Cannot overwrite prose silently.',
-    riskLabel: 'Low · Review required before changes',
+    riskLabel: 'Low (Review required before changes)',
   },
   'apply:text-transform': {
     title: 'Run Snapshot-Backed Text Cleanup',
     dataAccessed: 'Modifies prose formatting in the active scene after saving an automatic recovery snapshot.',
-    riskLabel: 'Medium · Creates snapshot before edits',
+    riskLabel: 'Medium (Creates snapshot before edits)',
   },
   'add:export-preset': {
     title: 'Apply Typeset Style Presets',
     dataAccessed: 'Updates trim size, typeface, line spacing, margins, and paper theme in the active book.',
-    riskLabel: 'Low · Layout settings only',
+    riskLabel: 'Low (Layout settings only)',
   },
   'add:font-pack': {
     title: 'Register Editorial Font Stacks',
     dataAccessed: 'Adds named font families into your Fonts & Preferences selector without accessing documents.',
-    riskLabel: 'Low · Typography list only',
+    riskLabel: 'Low (Typography list only)',
   },
 };
 

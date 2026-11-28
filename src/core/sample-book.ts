@@ -80,7 +80,7 @@ export function createStarterBookProject(): BookProject {
                 status: 'revision',
                 pov: 'Tomas Vance',
                 location: 'Skerry Reach Lighthouse',
-                timeline: 'Day 1 · 05:40',
+                timeline: 'Day 1, 05:40',
                 wordTarget: 1200,
                 content:
                   'Before the fog bell struck five, Tomas Vance knelt beside the iron tide-well with a caliper and a salt-stained ledger. Yesterday the southern channel had measured nine fathoms at slack water.\n\nThis morning the brass plumb line stopped short at four.\n\n* * *\n\n"Either the basin is rising," Clara Holm said from the lantern stair, holding an unlit storm lamp, "or the chart room at Brinehaven lost half its ink."\n\nTomas wiped brine from the Margin Sextant and marked the sounding in red graphite. Out beyond the breakwater, the outer bell tolled twice off-beat—an unmistakable warning that the limestone shelf had shifted again.',
@@ -118,7 +118,7 @@ export function createStarterBookProject(): BookProject {
                 status: 'draft',
                 pov: 'Clara Holm',
                 location: 'Brinehaven Archive',
-                timeline: 'Day 1 · 10:15',
+                timeline: 'Day 1, 10:15',
                 wordTarget: 1400,
                 content:
                   'The vaulted shelves of Brinehaven Archive smelled of cedar oil and dry kelp. Henrik Nystrom laid the cylinder onto the oak table and cracked its grey wax seal with a bone folder.\n\n"My grandfather drew this shoreline after the winter gale of 1841," Henrik murmured. "Look at the Margin Sextant bearings along the western shoal. The island did not sink—it turned."',
@@ -143,7 +143,7 @@ export function createStarterBookProject(): BookProject {
                 status: 'outline',
                 pov: 'Tomas Vance',
                 location: 'The Black Causeway',
-                timeline: 'Day 2 · 14:30',
+                timeline: 'Day 2, 14:30',
                 wordTarget: 1500,
                 content:
                   'By two o’clock the mudflats steamed under pale autumn sun. Tomas slung the copper sounding reel over his shoulder while Clara checked the pocket barometer.\n\nTwo miles ahead, the first Meridian Stone jutted out of the wet basalt like a broken mast.',
@@ -175,7 +175,7 @@ export function createStarterBookProject(): BookProject {
                 status: 'draft',
                 pov: 'Tomas Vance',
                 location: 'Skerry Reach Lighthouse',
-                timeline: 'Day 3 · 22:10',
+                timeline: 'Day 3, 22:10',
                 wordTarget: 1800,
                 content:
                   'Water climbed the lower granite steps three minutes ahead of the Admiralty almanac. From the gallery rail, Clara held the green signal glass while Tomas compared the Meridian Stone azimuth against Henrik’s folio.',
@@ -195,7 +195,7 @@ export function createStarterBookProject(): BookProject {
           id: 'char-tomas',
           name: 'Tomas Vance',
           aliases: 'Tomas, Vance, The Surveyor',
-          role: 'Protagonist · Senior Hydrographer',
+          role: 'Protagonist — Senior Hydrographer',
           motivation:
             'Prove the archipelago seabed shifts along predictable fault lines before winter shipping resumes.',
           appearance:
@@ -207,19 +207,19 @@ export function createStarterBookProject(): BookProject {
           id: 'char-clara',
           name: 'Clara Holm',
           aliases: 'Clara, Keeper Holm',
-          role: 'Deuteragonist · Lighthouse Keeper',
+          role: 'Deuteragonist — Lighthouse Keeper',
           motivation:
             'Protect coastal villages from inaccurate Admiralty shipping lanes.',
           appearance:
             'Tall, silver-streaked braid, carries a storm lamp and tide tables.',
           notes: 'Knows every reef current within thirty leagues of Skerry Reach.',
-          customFields: [{ key: 'Signal Code', value: 'Green Glass · 3-4-1' }],
+          customFields: [{ key: 'Signal Code', value: 'Green Glass (3-4-1)' }],
         },
         {
           id: 'char-henrik',
           name: 'Henrik Nystrom',
           aliases: 'Henrik, The Archivist',
-          role: 'Ally · Chief Chart Archivist',
+          role: 'Ally — Chief Chart Archivist',
           motivation: 'Preserve pre-Admiralty survey ledgers hidden in Brinehaven.',
           appearance: 'Spectacles mended with copper wire, linen apron over tweed.',
           notes: 'Grandson of the 1841 expedition draughtsman.',
@@ -355,7 +355,7 @@ export function createWelcomeIntroBookProject(): BookProject {
     '## Quick Start',
     '',
     '- **Rename Parts & Chapters:** Double-click any Part or Chapter title in the left Manuscript Binder, or right-click to rename, add scenes, or lock finished drafts.',
-    '- **Switch Workspace Layouts:** Click the Workspace badge in the bottom bar to move between Focused (quiet page), Editorial (Corkboard, Outline, Proofread, Typeset), and Full Studio (Story Bible, Story Graph, Book Cover Studio).',
+    '- **Switch Workspace Layouts:** Click the Workspace badge in the bottom bar to move between Focused (single drafting page), Editorial (Corkboard, Outline, Proofread, Typeset), and Full Studio (Story Bible, Story Graph, Book Cover Studio).',
     '- **Search Anywhere:** Press Ctrl+K (or Cmd+K on Mac) to jump between scenes, Story Bible entries, FAQ articles, tools, and Academy lessons.',
     '- **Save Backups:** Click Save (Ctrl+S) in the top bar to save or download a protected .qv archive containing your manuscript, Story Bible, graph, and cover.',
   ].join('\n');

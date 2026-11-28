@@ -1482,7 +1482,7 @@ export function renderEditorView(container: HTMLElement, actions: AppActions): v
     { className: 'bv-paper-float-nav' },
     el('span', {
       className: 'bv-scene-kicker',
-      text: `${part.title}  ·  ${chapter.title}`,
+      text: `${part.title} / ${chapter.title}`,
       style: {
         minWidth: '0',
         flex: '1 1 160px',
@@ -1864,7 +1864,7 @@ function renderProofreadWorkspace(
     if (hitMark) {
       const hitSpec = PROOFREAD_MARK_SPECS[hitMark.kind];
       groups.push({
-        heading: `Mark · ${hitSpec.label}`,
+        heading: `Mark: ${hitSpec.label}`,
         items: [
           {
             label: 'Accept Mark',
@@ -2081,7 +2081,7 @@ function renderMarkedSegments(
         text: chipText,
         attrs: { contenteditable: 'false', 'data-mark-id': m.id },
         tooltip: {
-          title: `${spec.label} · ${m.authorName}`,
+          title: `${spec.label} (${m.authorName})`,
           short: m.note || (m.replacement ? `Insert “${m.replacement}”` : spec.shortDesc),
         },
         on: {
@@ -2514,7 +2514,7 @@ function renderSplitReferencePane(actions: AppActions): HTMLElement {
           el('h3', { text: targetScene.title, style: { marginTop: '0', marginBottom: '6px' } }),
           el('p', {
             className: 'bv-mono-tag',
-            text: `${countWords(targetScene.content)} words · ${targetScene.pov || 'No POV'}`,
+            text: `${countWords(targetScene.content)} words, ${targetScene.pov || 'No POV'}`,
             style: { marginBottom: '14px' },
           }),
           el('div', { className: 'bv-ref-prose', text: targetScene.content || '(Empty scene)' }),

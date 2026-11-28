@@ -771,7 +771,7 @@ function renderBibleDetailForm(
   backlinksWrap.appendChild(
     el('span', {
       className: 'bv-panel-title',
-      text: `Scene Appearances (${match?.appearances.length ?? 0} ${(match?.appearances.length ?? 0) === 1 ? 'scene' : 'scenes'} · ${match?.totalOccurrences ?? 0} ${(match?.totalOccurrences ?? 0) === 1 ? 'mention' : 'mentions'})`,
+      text: `Scene Appearances (${match?.appearances.length ?? 0} ${(match?.appearances.length ?? 0) === 1 ? 'scene' : 'scenes'}, ${match?.totalOccurrences ?? 0} ${(match?.totalOccurrences ?? 0) === 1 ? 'mention' : 'mentions'})`,
     }),
   );
 

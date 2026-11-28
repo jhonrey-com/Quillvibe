@@ -66,7 +66,7 @@ export const CONTROL_REFERENCE_ITEMS: readonly ControlReferenceItem[] = [
     controlType: 'Section',
     location: 'Topbar left next to Binder toggle',
     summary: 'Renames the active manuscript inline and shows local auto-save state.',
-    howToUse: 'Edit text and press Enter or click away to rename the open book. Fixed-width Saved / Saving indicator updates quietly without shifting neighboring controls.',
+    howToUse: 'Edit text and press Enter or click away to rename the open book. Fixed-width Saved / Saving indicator updates in place without shifting neighboring controls.',
     keywords: 'title rename book saved saving indicator header',
   },
   {

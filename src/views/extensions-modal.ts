@@ -197,7 +197,7 @@ async function mountExtensionsWorkspace(
             click: () => {
               try {
                 const r = runExtensionReadabilityReport(ext, actions.getState().project, sceneId);
-                lastReadabilitySummary = `${r.words} words · ${r.sentences} sentences · Avg ${r.avgWordsPerSentence} w/sent · ${r.dialogueRatioPct}% dialogue · Flesch-Kincaid Grade ${r.fleschKincaidGrade}`;
+                lastReadabilitySummary = `${r.words} words | ${r.sentences} sentences | Avg ${r.avgWordsPerSentence} w/sent | ${r.dialogueRatioPct}% dialogue | Flesch-Kincaid Grade ${r.fleschKincaidGrade}`;
                 actions.notify('Readability metrics updated');
                 renderContent();
               } catch (err) {
@@ -308,7 +308,7 @@ async function mountExtensionsWorkspace(
         el('span', { className: 'bv-mono-tag', text: `SHA-256: ${c.sha256}` }),
       ),
       el('div', {
-        text: `${c.manifest.name} v${c.manifest.version} · Author: ${c.manifest.author}`,
+        text: `${c.manifest.name} v${c.manifest.version} — Author: ${c.manifest.author}`,
         style: { fontWeight: '600', fontSize: '14px' },
       }),
       el('p', { className: 'bv-label', text: c.manifest.description, style: { margin: '0' } }),
@@ -416,7 +416,7 @@ async function mountExtensionsWorkspace(
                 'div',
                 {},
                 el('div', {
-                  text: `${ext.manifest.name} · v${ext.manifest.version}`,
+                  text: `${ext.manifest.name} v${ext.manifest.version}`,
                   style: { fontWeight: '600', fontSize: '13.5px', color: 'var(--text-primary)' },
                 }),
                 el('div', { className: 'bv-label', text: ext.manifest.description }),
@@ -537,7 +537,7 @@ async function mountExtensionsWorkspace(
         ),
         el('div', {
           className: 'bv-label',
-          text: SANDBOX_BLOCKED_CAPABILITIES.join('  ·  '),
+          text: SANDBOX_BLOCKED_CAPABILITIES.join(', '),
         }),
       );
       contentArea.appendChild(sandboxBox);
@@ -578,7 +578,7 @@ async function mountExtensionsWorkspace(
                   'div',
                   {},
                   el('div', {
-                    text: `${ext.manifest.name} · v${ext.manifest.version} by ${ext.manifest.author}`,
+                    text: `${ext.manifest.name} v${ext.manifest.version} by ${ext.manifest.author}`,
                     style: { fontWeight: '600', fontSize: '13.5px' },
                   }),
                   el('div', { className: 'bv-label', text: ext.manifest.dataUsageSummary }),
@@ -697,7 +697,7 @@ async function mountExtensionsWorkspace(
             el('div', {
               text: osReport.allRegistered
                 ? 'All 4 Quillvibe extensions are active in your OS file shell'
-                : `Platform: ${osReport.platform} · Scope: ${osReport.scope}`,
+                : `Platform: ${osReport.platform} | Scope: ${osReport.scope}`,
               style: { fontWeight: '600' },
             }),
             el('div', { className: 'bv-label', text: osReport.executablePath }),

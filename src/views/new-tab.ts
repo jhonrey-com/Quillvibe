@@ -46,12 +46,12 @@ export function renderNewTabView(
           { className: 'qv-newtab-book-head' },
           el('strong', { className: 'qv-newtab-book-title', text: book.title || 'Untitled Book' }),
           openElsewhere
-            ? el('span', { className: 'qv-newtab-live-badge', text: 'Open Elsewhere · Live Sync' })
+            ? el('span', { className: 'qv-newtab-live-badge', text: 'Open Elsewhere (Live Sync)' })
             : null,
         ),
         el('div', {
           className: 'qv-newtab-book-meta',
-          text: `${pen} · ${words.toLocaleString()} words · Updated ${updatedLabel}`,
+          text: `${pen}, ${words.toLocaleString()} words, Updated ${updatedLabel}`,
         }),
       ),
     );

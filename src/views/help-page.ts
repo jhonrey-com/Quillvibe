@@ -33,7 +33,7 @@ export const HELP_FAQ_ARTICLES: readonly HelpFaqArticle[] = [
     details: [
       'Visit / for the Quillvibe overview landing page, /start to launch the Welcome workbench, or /write to jump directly into your active scene.',
       'Themes include Match Device (System), Ivory Light, Warm Parchment, and Obsidian Dark. All four update scrollbars, panels, and paper cleanly.',
-      'Workspace Layouts control which tools appear without deleting any book data: Focused (quiet drafting sheet), Editorial (adds Corkboard, Outline, Proofread, Typeset), and Full Studio (adds Story Bible, Story Graph, Book Cover Studio, Collaboration).',
+      'Workspace Layouts control which tools appear without deleting any book data: Focused (single drafting sheet), Editorial (adds Corkboard, Outline, Proofread, Typeset), and Full Studio (adds Story Bible, Story Graph, Book Cover Studio, Collaboration).',
       'On small screens and phones, sidebars collapse automatically so opening the left Binder closes the right Inspector and vice versa.',
     ],
     keywords: 'start welcome theme dark light system device layout focused editorial full studio mobile',
@@ -613,7 +613,7 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
             el('span', { className: 'qv-error-code-pill', text: err.code }),
             el('span', {
               className: 'bv-mono-tag',
-              text: `${err.category} · ${err.platform === 'both' ? 'Web & Desktop' : err.platform}`,
+              text: `${err.category} (${err.platform === 'both' ? 'Web & Desktop' : err.platform})`,
             }),
           ),
           el('h3', { className: 'qv-faq-trigger-title', text: err.title }),
@@ -681,7 +681,7 @@ export function renderHelpPageView(container: HTMLElement, actions: AppActions):
             'div',
             { className: 'qv-faq-trigger-meta' },
             el('span', { className: 'bv-control-type-pill', text: item.controlType }),
-            el('span', { className: 'bv-mono-tag', text: `${item.category} · ${item.location}` }),
+            el('span', { className: 'bv-mono-tag', text: `${item.category} (${item.location})` }),
           ),
           el('h3', { className: 'qv-faq-trigger-title', text: item.name }),
           el('p', { className: 'qv-faq-trigger-summary', text: item.summary }),

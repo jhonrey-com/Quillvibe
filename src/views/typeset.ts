@@ -487,7 +487,7 @@ function renderInteriorTypeset(container: HTMLElement, actions: AppActions): voi
           ...creditsRows,
           identity.authorKeyId
             ? el('p', {
-                text: `Author Key ${identity.authorKeyId}${identity.manuscriptDigest ? ` · Seal ${identity.manuscriptDigest.slice(0, 12)}…` : ''}`,
+                text: `Author Key ${identity.authorKeyId}${identity.manuscriptDigest ? ` | Seal ${identity.manuscriptDigest.slice(0, 12)}…` : ''}`,
                 style: { fontSize: '9.5px', letterSpacing: '0.06em', opacity: '0.8' },
               })
             : null,
@@ -670,7 +670,7 @@ function renderPublishReadinessTab(container: HTMLElement, actions: AppActions):
     {
       label: 'Book Title & Pen Name Configured',
       ok: Boolean(project.title.trim() && (identity.penName || project.author).trim()),
-      detail: `${project.title} · ${identity.penName || project.author}`,
+      detail: `${project.title} — ${identity.penName || project.author}`,
     },
     {
       label: 'Book Cover Ready',
@@ -683,14 +683,14 @@ function renderPublishReadinessTab(container: HTMLElement, actions: AppActions):
       label: 'Origin Author & Device Key',
       ok: Boolean(identity.authorKeyId && identity.manuscriptDigest),
       detail: identity.manuscriptDigest
-        ? `${identity.authorKeyId} · ${originCheck.isOriginDevice ? `Origin Device (${originCheck.originDeviceId})` : `Copy opened on ${originCheck.localDeviceId}`}`
+        ? `${identity.authorKeyId} (${originCheck.isOriginDevice ? `Origin Device ${originCheck.originDeviceId}` : `Copy opened on ${originCheck.localDeviceId}`})`
         : 'Create Author Key & Sign to bind pen name + origin device',
     },
     {
       label: 'Work Copyright Ownership Seal',
       ok: Boolean(copyrightRec?.sealId),
       detail: copyrightRec?.sealId
-        ? `${copyrightRec.sealId} · ${copyrightRec.ownerName} (${copyrightRec.rightsTerritory})`
+        ? `${copyrightRec.sealId} | ${copyrightRec.ownerName} (${copyrightRec.rightsTerritory})`
         : 'Register copyright ownership seal inside book metadata',
     },
     {
@@ -698,7 +698,7 @@ function renderPublishReadinessTab(container: HTMLElement, actions: AppActions):
       ok: Boolean(pubMeta.publisherCompany?.trim() || pubMeta.isbn?.trim() || pubMeta.rightsTerritory?.trim()),
       detail:
         pubMeta.publisherCompany?.trim() || pubMeta.isbn?.trim()
-          ? `${pubMeta.publisherCompany || pubMeta.imprintName || 'Independent'} · ${pubMeta.rightsTerritory || 'World Rights'}`
+          ? `${pubMeta.publisherCompany || pubMeta.imprintName || 'Independent'} | ${pubMeta.rightsTerritory || 'World Rights'}`
           : 'Configure Publisher, ISBN & Rights in Settings -> Publishing & Archive',
     },
     {
@@ -707,7 +707,7 @@ function renderPublishReadinessTab(container: HTMLElement, actions: AppActions):
       detail:
         openAnnotationsCount + openMarksCount === 0
           ? '0 open marks or notes'
-          : `${openMarksCount} open proofread mark(s) · ${openAnnotationsCount} open note(s)`,
+          : `${openMarksCount} open proofread mark(s), ${openAnnotationsCount} open note(s)`,
     },
     {
       label: 'Manuscript Content',
@@ -832,7 +832,7 @@ function renderPublishReadinessTab(container: HTMLElement, actions: AppActions):
           { style: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } },
           el('div', {
             className: 'bv-mono-tag',
-            text: `Key: ${identity.authorKeyId || 'Not generated'} · Device: ${originCheck.originDeviceId || originCheck.localDeviceId}`,
+            text: `Key: ${identity.authorKeyId || 'Not generated'} | Device: ${originCheck.originDeviceId || originCheck.localDeviceId}`,
           }),
           ...(isKeyLocked
             ? [el('span', { className: 'qv-key-locked-pill', text: originCheck.isOriginDevice ? 'Origin Device Match' : 'External Device Copy' })]
@@ -846,7 +846,7 @@ function renderPublishReadinessTab(container: HTMLElement, actions: AppActions):
           ? [
               el('div', {
                 className: 'bv-mono-tag',
-                text: `Copyright Seal: ${copyrightRec.sealId} · ${copyrightRec.ownerName} · ${copyrightRec.copyrightNotice}`,
+                text: `Copyright Seal: ${copyrightRec.sealId} | ${copyrightRec.ownerName} | ${copyrightRec.copyrightNotice}`,
               }),
             ]
           : []),

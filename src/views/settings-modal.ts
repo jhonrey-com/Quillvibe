@@ -169,7 +169,7 @@ function showUpdateCheckDialog(actions: AppActions): void {
 
   const platformLine = el('div', {
     className: 'bv-mono-tag',
-    text: `Installed: v${CURRENT_QUILLVIBE_VERSION} (${APP_COMMIT}) · ${isTauriRuntime() ? 'Desktop App' : 'Web Studio'}`,
+    text: `Installed: v${CURRENT_QUILLVIBE_VERSION} (${APP_COMMIT}) — ${isTauriRuntime() ? 'Desktop App' : 'Web Studio'}`,
   });
   const statusPill = el('span', {
     className: 'qv-update-status-pill is-checking',
@@ -300,7 +300,7 @@ function showUpdateCheckDialog(actions: AppActions): void {
         runtime?.os ||
         (typeof navigator !== 'undefined' ? navigator.platform || navigator.userAgent : 'windows');
       if (runtime) {
-        platformLine.textContent = `Installed: v${CURRENT_QUILLVIBE_VERSION} (${APP_COMMIT}) · ${runtime.os} ${runtime.arch}`;
+        platformLine.textContent = `Installed: v${CURRENT_QUILLVIBE_VERSION} (${APP_COMMIT}) — ${runtime.os} ${runtime.arch}`;
       }
 
       const latestTag = (data.tag_name || '').replace(/^v/i, '').trim() || CURRENT_QUILLVIBE_VERSION;
@@ -310,15 +310,15 @@ function showUpdateCheckDialog(actions: AppActions): void {
       statusPill.classList.remove('is-checking');
       if (cmp > 0) {
         statusPill.classList.add('is-available');
-        statusPill.textContent = `Update Available · v${latestTag}`;
+        statusPill.textContent = `Update Available: v${latestTag}`;
         statusText.textContent = `Quillvibe v${latestTag} is ready to install (you are on v${CURRENT_QUILLVIBE_VERSION}).`;
       } else if (cmp < 0 || isPrereleaseVersion(CURRENT_QUILLVIBE_VERSION)) {
         statusPill.classList.add('is-ok');
-        statusPill.textContent = `Pre-Release Build · v${CURRENT_QUILLVIBE_VERSION}`;
+        statusPill.textContent = `Pre-Release Build: v${CURRENT_QUILLVIBE_VERSION}`;
         statusText.textContent = `Quillvibe v${CURRENT_QUILLVIBE_VERSION} (${APP_COMMIT}) is ahead of public release v${latestTag}.`;
       } else {
         statusPill.classList.add('is-ok');
-        statusPill.textContent = `Up to Date · v${CURRENT_QUILLVIBE_VERSION}`;
+        statusPill.textContent = `Up to Date: v${CURRENT_QUILLVIBE_VERSION}`;
         statusText.textContent = 'You are running the latest verified release of Quillvibe.';
       }
 
@@ -891,7 +891,7 @@ export function renderSettingsPageView(container: HTMLElement, actions: AppActio
         attrs: {
           type: 'text',
           value: settings.windowTitleCustom,
-          placeholder: 'e.g. Quillvibe · {book} ({section})',
+          placeholder: 'e.g. Quillvibe — {book} ({section})',
         },
         style: { display: settings.windowTitleMode === 'custom' ? '' : 'none' },
         on: {
@@ -1584,7 +1584,7 @@ export function renderSettingsPageView(container: HTMLElement, actions: AppActio
         },
           el('div', {},
             el('div', { text: `Publisher Origin: ${prov.publisher}`, style: { fontWeight: '600', fontSize: '12.5px' } }),
-            el('div', { className: 'bv-mono-tag', text: `Build Mark: ${prov.mark} · Verified: ${verified ? 'Valid' : 'Mismatch'}` }),
+            el('div', { className: 'bv-mono-tag', text: `Build Mark: ${prov.mark} | Verified: ${verified ? 'Valid' : 'Mismatch'}` }),
           ),
           el('span', { className: 'bv-mono-tag', text: `v${CURRENT_QUILLVIBE_VERSION} (${APP_COMMIT})`, style: { color: 'var(--accent-emerald)' } }),
         ),
@@ -1607,7 +1607,7 @@ export function renderSettingsPageView(container: HTMLElement, actions: AppActio
         'section',
         { className: 'bv-cork-card' },
         el('span', { className: 'bv-panel-title', text: 'Workspace Telemetry Summary (Local Only)' }),
-        el('div', { className: 'bv-mono-tag', text: `Book ID: ${project.id} · Scenes: ${scenesCount} · Custom Fonts: ${fontsCount} · Audit Events: ${auditEntries}` }),
+        el('div', { className: 'bv-mono-tag', text: `Book ID: ${project.id} | Scenes: ${scenesCount} | Custom Fonts: ${fontsCount} | Audit Events: ${auditEntries}` }),
         el(
           'div',
           { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' } },
@@ -1693,7 +1693,7 @@ export function renderSettingsPageView(container: HTMLElement, actions: AppActio
                 attrs: { type: 'button' },
                 on: { click: () => showUpdateCheckDialog(actions) },
               },
-              `v${CURRENT_QUILLVIBE_VERSION} · Check Updates`,
+              `Check Updates (v${CURRENT_QUILLVIBE_VERSION})`,
             ),
           ]
         : []),

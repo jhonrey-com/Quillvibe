@@ -159,7 +159,7 @@ export function showLibraryModal(actions: AppActions): void {
             }),
             el('div', {
               className: 'bv-mono-tag',
-              text: `Pen: ${pen} · ${getProjectWordCount(book).toLocaleString()}w · ${keyBadge}`,
+              text: `Pen: ${pen} | ${getProjectWordCount(book).toLocaleString()}w | ${keyBadge}`,
             }),
           ),
           el(
@@ -427,7 +427,7 @@ export function showLibraryModal(actions: AppActions): void {
               const origin = checkBookOriginDevice(activeBook);
               return el('div', {
                 className: 'bv-mono-tag',
-                text: `Author Key: ${identity.authorKeyId || 'Not created'} · Origin Device: ${origin.originDeviceId || origin.localDeviceId}`,
+                text: `Author Key: ${identity.authorKeyId || 'Not created'} | Origin Device: ${origin.originDeviceId || origin.localDeviceId}`,
               });
             })(),
             ...(isKeyLocked
@@ -449,7 +449,7 @@ export function showLibraryModal(actions: AppActions): void {
             ? [
                 el('div', {
                   className: 'bv-mono-tag',
-                  text: `Copyright Seal: ${activeBook.copyrightOwnership.sealId} · ${activeBook.copyrightOwnership.ownerName} · ${activeBook.copyrightOwnership.rightsTerritory}`,
+                  text: `Copyright Seal: ${activeBook.copyrightOwnership.sealId} | ${activeBook.copyrightOwnership.ownerName} (${activeBook.copyrightOwnership.rightsTerritory})`,
                 }),
               ]
             : []),
@@ -540,7 +540,7 @@ export function showLibraryModal(actions: AppActions): void {
     el(
       'div',
       { className: 'bv-panel-head' },
-      el('span', { className: 'bv-panel-title', text: 'Multi-Book Library · Pen Name, Signature & Author Key' }),
+      el('span', { className: 'bv-panel-title', text: 'Multi-Book Library: Pen Name, Signature & Author Key' }),
       el('button', {
         className: 'bv-mini-btn',
         text: 'Close',

@@ -146,7 +146,7 @@ export function renderOutlineView(container: HTMLElement, actions: AppActions): 
       el('span', { className: 'bv-panel-title', text: 'Outline & Pacing Matrix' }),
       el('span', {
         className: 'bv-mono-tag',
-        text: `${allScenes.length} ${allScenes.length === 1 ? 'scene' : 'scenes'} · ${actualBookWords.toLocaleString()} ${actualBookWords === 1 ? 'word' : 'words'}`,
+        text: `${allScenes.length} ${allScenes.length === 1 ? 'scene' : 'scenes'}, ${actualBookWords.toLocaleString()} ${actualBookWords === 1 ? 'word' : 'words'}`,
       }),
     ),
     el(
@@ -474,7 +474,7 @@ export function renderOutlineView(container: HTMLElement, actions: AppActions): 
               { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' } },
               el('span', {
                 className: 'bv-mono-tag',
-                text: `${chapter.scenes.length} scene${chapter.scenes.length === 1 ? '' : 's'} · ${chapWords.toLocaleString()} words (${chapShare}% of book)`,
+                text: `${chapter.scenes.length} scene${chapter.scenes.length === 1 ? '' : 's'}, ${chapWords.toLocaleString()} words (${chapShare}% of book)`,
               }),
               el(
                 'button',

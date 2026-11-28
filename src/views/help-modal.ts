@@ -192,7 +192,7 @@ const renderTabs = () => {
               el('strong', { text: item.name, style: { fontSize: '12.5px' } }),
               el('span', { className: 'bv-control-type-pill', text: item.controlType }),
             ),
-            el('div', { className: 'bv-mono-tag', text: `${item.category} · ${item.location}` }),
+            el('div', { className: 'bv-mono-tag', text: `${item.category} (${item.location})` }),
             el('p', { className: 'bv-label', text: item.summary, style: { margin: '2px 0 0', color: 'var(--text-primary)' } }),
             el('p', { className: 'bv-label', text: item.howToUse, style: { margin: '2px 0 0' } }),
           ),
@@ -319,7 +319,7 @@ const renderTabs = () => {
                 el('strong', { text: item.name, style: { fontSize: '12.5px' } }),
                 el('span', { className: 'bv-control-type-pill', text: item.controlType }),
               ),
-              el('div', { className: 'bv-mono-tag', text: `${item.category} · ${item.location}` }),
+              el('div', { className: 'bv-mono-tag', text: `${item.category} (${item.location})` }),
               el('p', {
                 className: 'bv-label',
                 text: item.summary,
@@ -622,7 +622,7 @@ const renderTabs = () => {
             el(
               'div',
               {},
-              el('span', { className: 'bv-mono-tag', text: `COURSE PROGRESS · ${progress.completed}/${progress.total} LESSONS (${progress.pct}%)` }),
+              el('span', { className: 'bv-mono-tag', text: `COURSE PROGRESS: ${progress.completed}/${progress.total} LESSONS (${progress.pct}%)` }),
               el('h3', { text: 'Complete Guide: Writing & Publishing a Book in Quillvibe', style: { margin: '4px 0 2px', fontSize: '15px' } }),
               el('p', { className: 'bv-label', text: 'Follow each module hands-on inside your live workspace. Click Launch Interactive Coach to keep the checklist floating beside you as you practice.', style: { margin: '0' } }),
             ),

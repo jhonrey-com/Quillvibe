@@ -210,12 +210,12 @@ export function showCollabModal(actions: AppActions): void {
                   'div',
                   {},
                   el('div', {
-                    text: `${c.penName || c.name} · ${COLLABORATOR_ROLE_LABELS[c.role]}`,
+                    text: `${c.penName || c.name} — ${COLLABORATOR_ROLE_LABELS[c.role]}`,
                     style: { fontWeight: '600', color: 'var(--text-primary)' },
                   }),
                   el('div', {
                     className: 'bv-label',
-                    text: `${c.creditLine}${c.coAuthorKeyId || c.authorKeyId ? ` · Key ${c.coAuthorKeyId || c.authorKeyId}` : ''}`,
+                    text: `${c.creditLine}${c.coAuthorKeyId || c.authorKeyId ? ` | Key ${c.coAuthorKeyId || c.authorKeyId}` : ''}`,
                   }),
                 ),
                 el(
@@ -662,7 +662,7 @@ export function showCollabModal(actions: AppActions): void {
       const currentPayload = serializeExtensionFile('.qv', project);
       void computeSha256Hex(currentPayload).then((hex) => {
         if (fingerprintEl.isConnected) {
-          fingerprintEl.textContent = `Package SHA-256: ${hex.slice(0, 16).toUpperCase()} · ${Math.round(currentPayload.length / 1024)} KB`;
+          fingerprintEl.textContent = `Package SHA-256: ${hex.slice(0, 16).toUpperCase()} (${Math.round(currentPayload.length / 1024)} KB)`;
         }
       });
 
@@ -1004,7 +1004,7 @@ export function showCollabModal(actions: AppActions): void {
                     const json = serializeExtensionFile('.qv', actions.getState().project);
                     const res = await pushBookToEnterpriseServer(serverCfg, tokenIn.value, project, json);
                     serverStatusOk = true;
-                    serverStatusMessage = `Pushed revision (HTTP ${res.status} · ${res.sha256.slice(0, 12).toUpperCase()})`;
+                    serverStatusMessage = `Pushed revision (HTTP ${res.status}, ${res.sha256.slice(0, 12).toUpperCase()})`;
                     statusTag.textContent = serverStatusMessage;
                     statusTag.style.color = 'var(--accent-emerald)';
                     actions.notify('Pushed book revision to your sync server.');

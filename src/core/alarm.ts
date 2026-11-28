@@ -20,7 +20,7 @@ export const ALARM_RINGTONES: readonly AlarmRingtoneSpec[] = [
   {
     id: 'wood-marimba',
     label: 'Rosewood Marimba',
-    description: 'Rounded four-note wooden cadence suited for quiet drafting rooms.',
+    description: 'Rounded four-note wooden cadence suited for focused drafting sessions.',
   },
   {
     id: 'harbor-gong',

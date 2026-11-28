@@ -359,7 +359,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
       }),
       el('span', {
         className: `bv-mono-tag${isModComplete ? ' qv-course-mod-done-badge' : ''}`,
-        text: isModComplete ? `Completed · ${modCompleted}/${mod.lessons.length}` : `${modCompleted}/${mod.lessons.length}`,
+        text: isModComplete ? `Completed (${modCompleted}/${mod.lessons.length})` : `${modCompleted}/${mod.lessons.length}`,
       }),
     );
 
@@ -392,7 +392,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
             },
             el('span', {
               className: 'qv-course-nav-dot',
-              text: isDone ? '✓' : '·',
+              text: isDone ? '✓' : '–',
             }),
             el(
               'div',
@@ -400,7 +400,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
               el('div', { text: lesson.title }),
               el('span', {
                 className: 'bv-mono-tag',
-                text: `${lesson.durationMin} min · ${lesson.minTier}`,
+                text: `${lesson.durationMin} min (${lesson.minTier})`,
               }),
             ),
           ),
@@ -427,7 +427,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
           'div',
           {},
           el('strong', { text: 'Book Writing Course', style: { fontSize: '14.5px', display: 'block' } }),
-          el('span', { className: 'bv-label', text: `${visibleModCount} modules · ${summary.total} lessons` }),
+          el('span', { className: 'bv-label', text: `${visibleModCount} modules, ${summary.total} lessons` }),
         ),
         el(
           'button',
@@ -532,7 +532,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
   const exampleBox = el(
     'aside',
     { className: 'qv-course-callout' },
-    el('div', { className: 'bv-panel-title', text: `Practical Example · ${lesson.example.heading}` }),
+    el('div', { className: 'bv-panel-title', text: `Practical Example: ${lesson.example.heading}` }),
     el('p', { text: lesson.example.body }),
     el(
       'div',
@@ -653,7 +653,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
       el(
         'div',
         { className: 'qv-course-meta-row' },
-        el('span', { className: 'bv-mono-tag', text: `MODULE ${mod.number} · ${mod.title.toUpperCase()}` }),
+        el('span', { className: 'bv-mono-tag', text: `MODULE ${mod.number}: ${mod.title.toUpperCase()}` }),
         el(
           'div',
           { style: { display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } },
@@ -666,7 +666,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
           mod.lessons.every((l) => doneSet.has(l.id))
             ? el('span', { className: 'bv-mono-tag qv-course-mod-done-badge', text: 'COURSE COMPLETED' })
             : null,
-          el('span', { className: 'bv-mono-tag', text: `${lesson.durationMin} MIN · ${lesson.minTier.toUpperCase()} TIER` }),
+          el('span', { className: 'bv-mono-tag', text: `${lesson.durationMin} MIN (${lesson.minTier.toUpperCase()} TIER)` }),
         ),
       ),
       el('h1', { className: 'qv-course-title', text: lesson.title }),
@@ -695,7 +695,7 @@ export function renderCoursePageView(container: HTMLElement, actions: AppActions
               },
             },
             icon('course', 14),
-            `Start Live Guided Tutorial · ${lesson.actionLabel}`,
+            `Start Live Guided Tutorial: ${lesson.actionLabel}`,
           );
           return liveBtn;
         })(),

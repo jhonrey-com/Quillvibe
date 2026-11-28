@@ -263,7 +263,7 @@ export function renderDeveloperPageView(container: HTMLElement, actions: AppActi
     try {
       const parsed = validateExternalExtensionManifest(manifestInput.value);
       const sha = await computeManifestSha256(manifestInput.value);
-      validatorResult.textContent = `Valid manifest: ${parsed.name} v${parsed.version} (${parsed.id}) · Permissions: ${parsed.permissions.join(', ')} · SHA-256 prefix: ${sha}`;
+      validatorResult.textContent = `Valid manifest: ${parsed.name} v${parsed.version} (${parsed.id}) | Permissions: ${parsed.permissions.join(', ')} | SHA-256 prefix: ${sha}`;
       validatorResult.style.borderColor = 'var(--accent-emerald)';
       return parsed;
     } catch (err) {

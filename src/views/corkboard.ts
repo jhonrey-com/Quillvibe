@@ -147,7 +147,7 @@ export function renderCorkboardView(container: HTMLElement, actions: AppActions)
           ),
           el('div', {
             className: 'bv-mono-tag',
-            text: `${scene.pov || 'No POV'}  ·  ${scene.timeline || 'Unplaced'}`,
+            text: `${scene.pov || 'No POV'} | ${scene.timeline || 'Unplaced'}`,
           }),
         );
 

@@ -18,6 +18,13 @@ src-tauri/gen/
 *.p12
 credentials.json
 
+# Local databases & SQL dumps
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sql
+
 # OS & Editor junk
 .DS_Store
 Thumbs.db

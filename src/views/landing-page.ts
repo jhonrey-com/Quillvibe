@@ -86,7 +86,7 @@ export function renderLandingPageView(
       attrs: {
         type: 'button',
         'aria-label': `Switch Theme (${curState.settings.appTheme})`,
-        title: 'Switch Theme: Match Device · Ivory · Parchment · Obsidian',
+        title: 'Switch Theme: Match Device, Ivory, Parchment, Obsidian',
       },
       on: {
         click: () => {
@@ -251,7 +251,7 @@ export function renderLandingPageView(
         { className: 'qv-landing-hero-copy' },
         el('h1', {
           className: 'qv-landing-hero-title',
-          text: 'Write chapters, build your world, mark proofs, design your cover, and export for print—all in one quiet book file.',
+          text: 'Write chapters, build your world, mark proofs, design your cover, and export for print in a single book file.',
         }),
         el('p', {
           className: 'qv-landing-hero-lead',
@@ -333,7 +333,7 @@ export function renderLandingPageView(
         { className: 'qv-landing-section-head' },
         el('h2', { text: 'Why keep an entire book in one workspace' }),
         el('p', {
-          text: 'Most writers split a single book across five separate apps—word processors for chapters, spreadsheets for timelines, note wikis for characters, image editors for covers, and converters for eBooks. Quillvibe keeps every stage in one local .qv project file.',
+          text: 'Most writers split a single book across five separate apps: word processors for chapters, spreadsheets for timelines, note wikis for characters, image editors for covers, and converters for eBooks. Quillvibe keeps every stage in one local .qv project file.',
         }),
       ),
       el(
@@ -342,7 +342,7 @@ export function renderLandingPageView(
         ...whyCards.map(([title, body]) =>
           el(
             'article',
-            { className: 'qv-landing-card' },
+            { className: 'qv-landing-col' },
             el('h3', { text: title }),
             el('p', { text: body }),
           ),
@@ -378,7 +378,7 @@ export function renderLandingPageView(
         { className: 'qv-landing-section-head' },
         el('h2', { text: 'Three Workspace Layouts that adapt without deleting work' }),
         el('p', {
-          text: 'Switch between Focused, Editorial, and Full Studio in one click from the status bar. Changing layouts only shows or hides surrounding panels—your Story Bible, notes, and cover layers stay intact.',
+          text: 'Switch between Focused, Editorial, and Full Studio in one click from the status bar. Changing layouts only shows or hides surrounding panels; your Story Bible, notes, and cover layers stay intact.',
         }),
       ),
       el(
@@ -387,7 +387,7 @@ export function renderLandingPageView(
         ...layoutCards.map(([title, body]) =>
           el(
             'article',
-            { className: 'qv-landing-card' },
+            { className: 'qv-landing-col' },
             el('h3', { text: title }),
             el('p', { text: body }),
           ),
@@ -616,7 +616,7 @@ export function renderLandingPageView(
           }),
           el('p', {
             className: 'qv-landing-footer-contact',
-            text: 'Support & inquiries: quillvibe@jhonrey.com · support@quillvibe.app',
+            text: 'Support & inquiries: quillvibe@jhonrey.com | support@quillvibe.app',
           }),
         ),
         el(
@@ -650,7 +650,7 @@ export function renderLandingPageView(
       el(
         'div',
         { className: 'qv-landing-footer-bottom' },
-        el('span', { text: '© 2026 CXVRE Information Technology Services · Published under jhonrey.com · MIT License' }),
+        el('span', { text: '© 2026 CXVRE Information Technology Services. Published under jhonrey.com (MIT License)' }),
         el('span', { text: `v${APP_VERSION}` }),
       ),
     ),

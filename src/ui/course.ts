@@ -106,7 +106,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
     title: 'Desk Setup, Workspace Layouts & Multi-Window Books',
     summary:
       'Set up your book identity, switch between Focused, Editorial, and Full Studio layouts, resize columns, and work across parallel windows or tabs.',
-    audience: 'First-time authors setting up a quiet desk',
+    audience: 'First-time authors setting up their writing desk',
     lessons: [
       {
         id: 'm1-title',
@@ -151,7 +151,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
         title: 'Switch Between Focused Drafting and Full Publishing Studio',
         durationMin: 4,
         instruction:
-          'Draft in Focused layout for a quiet document sheet, then switch to Editorial or Full Studio when you want outlining, Story Bible cross-linking, or Cover Studio.',
+          'Draft in Focused layout for a clean document sheet, then switch to Editorial or Full Studio when you want outlining, Story Bible cross-linking, or Cover Studio.',
         objective: 'Keep the interface calm while drafting and expose specialized tools only when needed.',
         concepts: [
           'Writing stalls when twenty unrelated panels compete for attention on chapter one. Focused layout intentionally hides multi-pane visualizers and cover tools so you see only your binder, clean sheet, and simple typography bar.',
@@ -159,7 +159,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
         ],
         steps: [
           'Open Settings -> Workspace & Editor (or click the Workspace pill in the bottom-left status bar) to pick Focused, Editorial, or Full Studio.',
-          'Start drafting a scene in Focused layout for a quiet Ivory sheet.',
+          'Start drafting a scene in Focused layout on an Ivory sheet.',
           'Switch to Editorial or Full Studio whenever you are ready to outline scenes or lay out a cover.',
         ],
         example: {
@@ -317,7 +317,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
         objective: 'Run focused 25- or 45-minute drafting sessions with zero OS distraction.',
         concepts: [
           'The Ivory theme pairs daylight paper contrast with crisp obsidian ink, while Warm Parchment softens contrast for late afternoons and Obsidian Dark protects night-owl eyesight. You can toggle sheet themes independently of the outer studio chrome.',
-          'In Immersive Fullscreen mode (especially on the desktop executable), the window expands edge-to-edge with a quiet floating status pill. In Settings -> Immersive Fullscreen & Alarm Ringtones you choose whether to show the wall clock, sprint countdown, word goal progress, and Alarm Clock trigger—complete with five built-in Web Audio chimes that require no external audio files.',
+          'In Immersive Fullscreen mode (especially on the desktop executable), the window expands edge-to-edge with a compact floating status pill. In Settings -> Immersive Fullscreen & Alarm Ringtones you choose whether to show the wall clock, sprint countdown, word goal progress, and Alarm Clock trigger—complete with five built-in Web Audio chimes that require no external audio files.',
         ],
         steps: [
           'Click the Fullscreen button (or press F11) in the top-right bar to enter Immersive Mode.',
@@ -374,7 +374,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
         ],
         example: {
           heading: 'Checking Act II Tension',
-          body: 'Scan status pills down the Corkboard column: if four consecutive scenes show "Draft · Sub-200w", merge or expand those beats before copyediting.',
+          body: 'Scan status pills down the Corkboard column: if four consecutive scenes show "Draft, Sub-200w", merge or expand those beats before copyediting.',
         },
         proTip:
           'Keep synopses to two factual sentences: Character Goal -> Scene Outcome/Shift.',
@@ -612,7 +612,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
         ],
         example: {
           heading: 'Cutting 20% in Line Edits',
-          body: 'Capture a "Pre-Cut Draft" snapshot before tightening Chapter 1; Revision Diff shows net cut word counts and ensures crucial clues survived.',
+          body: 'Capture a "Pre-Cut Draft" snapshot before tightening Chapter 1; Revision Diff shows net cut word counts and ensures key plot clues survived.',
         },
         proTip:
           'Combine snapshots with Co-Author merges: whenever an offline LAN/Bluetooth sync detects a conflict, it automatically stores the peer revision as a readable snapshot so you can diff it here.',
@@ -650,7 +650,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
           'Open Studio -> Interior Typeset to pick US/UK trade trim sizes (5x8, 5.5x8.5, 6x9, A5, Royal), install local .ttf/.otf/.woff2 fonts, configure drop caps, and inspect multi-page pagination.',
         objective: 'Transform raw draft prose into balanced book spreads matching print house specifications.',
         concepts: [
-          'Standard consumer word processors default to 8.5×11 office sheets. Real books use specific trade dimensions like 5×8 pocket fiction, 5.5×8.5 digest nonfiction, or 6×9 standard trade with mirrored inside gutter margins and proportioned text blocks.',
+          'Standard consumer word processors default to 8.5×11 office sheets. Printed trade books use specific dimensions like 5×8 pocket fiction, 5.5×8.5 digest nonfiction, or 6×9 standard trade with mirrored inside gutter margins and proportioned text blocks.',
           'Under Settings -> Typefaces & Fonts, you can drop any licensed .ttf, .otf, or .woff2 font file (validated locally by magic-byte header) or pick an installed OS font and apply it independently to your writing desk or your final typeset book.',
         ],
         steps: [
@@ -740,7 +740,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
           'You can switch backgrounds between solid color, dual-stop linear gradients, or full-bleed artwork with live Brightness, Contrast, Blur, and Tint Dim controls so light display ink pops reliably over photography.',
         ],
         steps: [
-          'Open Studio -> Book Cover Studio (Advanced tier) and note the quiet left tool rail, center artboard, and right Inspector.',
+          'Open Studio -> Book Cover Studio (Advanced tier) and note the left tool rail, center artboard, and right Inspector.',
           'Pick a base palette or gradient on the left panel, then click Vector Shapes or Add Text Layer to place architectural dividers or praise ribbons.',
           'Drop a custom .svg or transparent .png directly onto the canvas, drag to position, and inspect Layer Stack ordering.',
         ],
@@ -1268,7 +1268,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
         ],
         example: {
           heading: 'Advance Review Proofs',
-          body: 'Type "ADVANCE REVIEW COPY · NOT FOR SALE" into Printable ARC Watermark, then print your PDF proof for early reviewers.',
+          body: 'Type "ADVANCE REVIEW COPY — NOT FOR SALE" into Printable ARC Watermark, then print your PDF proof for early reviewers.',
         },
         proTip:
           'Check Studio -> Publish Readiness anytime to confirm your Commercial / Publisher Release Info check turns green.',
@@ -1467,7 +1467,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
           'Use Proofread Copyediting Marks and Snapshots to test starting your opening scene on paragraph four instead of paragraph one.',
         objective: 'Cut warmup paragraphs safely while keeping original lines backed up in Snapshots.',
         concepts: [
-          'Writers often warm up during the first three paragraphs of a morning session—describing weather, waking up, or repeating yesterday’s facts—before the real friction begins on paragraph four. Once the scene is alive, those warmup lines slow down the reader’s entrance.',
+          'Writers often warm up during the first three paragraphs of a morning session—describing weather, waking up, or repeating yesterday’s facts—before the central conflict begins on paragraph four. Once the scene is alive, those warmup lines slow down the reader’s entrance.',
           'Taking a Revision Snapshot before pruning lets you mark cuts with zero fear: you can restore or inspect the deleted opening anytime in Revision Diff.',
         ],
         steps: [
@@ -2014,7 +2014,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
           body: 'Two focused 25-minute sprints targeting +450 words each yield ~900 clean words/day—enough for a 75,000-word draft in under three months.',
         },
         proTip:
-          'Set custom Scene Targets (e.g., 1,200w for pivotal scenes, 450w for short bridge scenes) so Corkboard card progress meters accurately reflect intentional pacing.',
+          'Set custom Scene Targets (e.g., 1,200w for major turning-point scenes, 450w for short bridge scenes) so Corkboard card progress meters accurately reflect intentional pacing.',
         checkpoint: {
           question: 'Where do Scene Inspector fields like POV, Timeline, and Word Target also appear automatically?',
           options: [
@@ -2581,7 +2581,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
           body: 'Draw an angular diamond horizon in muted amber (#d9b478) over a charcoal canvas texture and switch Blend Mode to Soft Light at 68% opacity.',
         },
         proTip:
-          'Remember that Freehand Brush strokes, Vector Pen paths, 7 blend modes, Draft Comparisons, and Review Pins save seamlessly inside standalone `.qvdesign` files even if kept separate from manuscript text.',
+          'Remember that Freehand Brush strokes, Vector Pen paths, 7 blend modes, Draft Comparisons, and Review Pins save directly inside standalone `.qvdesign` files even if kept separate from manuscript text.',
         checkpoint: {
           question: 'Which blend mode naturally integrates highlights/warm tones gently over underlying dark cover textures?',
           options: ['Overlay / Soft Light (Desktop Pro Vector Studio)', 'Hard Page Wrap', 'Lock Layer'],
@@ -2821,7 +2821,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
         ],
         example: {
           heading: 'Trilogy Continuity Desk',
-          body: 'Tab 1: Volume II Working Draft · Tab 2: Series Bible Reference · Tab 3: Short Story Collection — switching in one click.',
+          body: 'Tab 1: Volume II Working Draft | Tab 2: Series Bible Reference | Tab 3: Short Story Collection — switching in one click.',
         },
         proTip:
           'If a tab window stays open while you switch scenes, live conflict-safe local sync propagates changes if the same file is inspected.',
@@ -2987,7 +2987,7 @@ export const COURSE_MODULES: readonly CourseModule[] = [
             'Desktop saves files only as temporary clipboard text',
           ],
           correctIndex: 0,
-          explanation: 'Desktop binds straight to your filesystem folder via the Rust core for zero-friction disk saves.',
+          explanation: 'Desktop binds straight to your filesystem folder via the Rust core for direct local disk saves.',
         },
         actionLabel: 'Open Publish & Share Tools',
         minTier: 'advanced',
@@ -3399,7 +3399,7 @@ export function navigateToCourseLesson(
       }),
     );
 
-    const tagEl = el('span', { className: 'qv-guide-cursor-tag', text: `Try here · ${lesson.actionLabel}` });
+    const tagEl = el('span', { className: 'qv-guide-cursor-tag', text: `Try here: ${lesson.actionLabel}` });
     const cursorEl = el(
       'div',
       {

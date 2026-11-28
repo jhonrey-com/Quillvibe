@@ -892,7 +892,7 @@ function updateSprintDisplay(): void {
   const currentTotal = getProjectWordCount(state.project);
   const delta = currentTotal - state.sprintStartWords;
   const deltaText = delta >= 0 ? `+${delta}w` : `${delta}w`;
-  sprintStatusEl.textContent = `Sprint ${formatClock(state.sprintRemainingSec)} · ${deltaText}`;
+  sprintStatusEl.textContent = `Sprint ${formatClock(state.sprintRemainingSec)} (${deltaText})`;
   sprintToggleBtnEl.textContent = state.sprintRunning ? 'Pause' : 'Start';
 }
 
@@ -906,7 +906,7 @@ function updateWordCountersOnly(): void {
   const mins = estimateReadingMinutes(totalWords);
 
   if (wordStatsEl) {
-    wordStatsEl.textContent = `Scene ${sceneWords}w (${sceneChars}c) · Ch ${chapWords}w · Book ${totalWords.toLocaleString()} / ${state.project.wordTarget.toLocaleString()}w · ~${pages}p (${mins}m)`;
+    wordStatsEl.textContent = `Scene ${sceneWords}w (${sceneChars}c) | Ch ${chapWords}w | Book ${totalWords.toLocaleString()} / ${state.project.wordTarget.toLocaleString()}w | ~${pages}p (${mins}m)`;
   }
 
   if (ctx) {
@@ -2403,7 +2403,7 @@ const actions: AppActions = {
         if (!wrapPng) throw new Error('Unable to render full cover wrap PNG.');
         return exportCoverPngDownload(wrapPng, state.project.title, 'wrap');
       });
-      if (saved) actions.notify('Exported Full Cover Wrap PNG (Back · Spine · Front)');
+      if (saved) actions.notify('Exported Full Cover Wrap PNG (Back, Spine, Front)');
     } catch (err) {
       actions.notify(err instanceof Error ? err.message : 'Full wrap export failed.');
     }
@@ -2969,7 +2969,7 @@ function renderDesktopTabBar(): void {
     const words = getProjectWordCount(book);
     return {
       title: book.title || 'Untitled Book',
-      short: `${book.author || 'Author'} · ${words.toLocaleString()} words`,
+      short: `${book.author || 'Author'} — ${words.toLocaleString()} words`,
     };
   };
 

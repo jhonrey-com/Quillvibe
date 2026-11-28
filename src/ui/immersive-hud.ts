@@ -427,7 +427,7 @@ export function mountImmersiveHud(
       const total = getProjectWordCount(project);
       const delta = total - state.sprintStartWords;
       const sign = delta >= 0 ? `+${delta}w` : `${delta}w`;
-      sprintTextEl.textContent = `${formatRemainingClock(state.sprintRemainingSec)} · ${sign}`;
+      sprintTextEl.textContent = `${formatRemainingClock(state.sprintRemainingSec)} (${sign})`;
       sprintBtnEl.replaceChildren(createHudMicroIcon(state.sprintRunning ? 'pause' : 'play'));
       sprintBtnEl.setAttribute('aria-label', state.sprintRunning ? 'Pause writing sprint' : 'Start writing sprint');
       sprintBtnEl.setAttribute('title', state.sprintRunning ? 'Pause sprint' : 'Start sprint');
@@ -502,7 +502,7 @@ export function mountImmersiveHud(
     if (settings.immersiveShowMedia) {
       const trackTitle = resolveBackgroundMediaTitle();
       const volPct = Math.round(settings.alarmVolume * 100);
-      mediaTextEl.textContent = trackTitle ? `${trackTitle} · ${volPct}%` : `${volPct}%`;
+      mediaTextEl.textContent = trackTitle ? `${trackTitle} (${volPct}%)` : `${volPct}%`;
       metricGroups.push(
         el(
           'button',
@@ -651,7 +651,7 @@ export function mountImmersiveHud(
       if (actions.getState().settings.immersiveShowTimer) {
         const s = actions.getState();
         const delta = getProjectWordCount(s.project) - s.sprintStartWords;
-        sprintTextEl.textContent = `${formatRemainingClock(s.sprintRemainingSec)} · ${delta >= 0 ? '+' : ''}${delta}w`;
+        sprintTextEl.textContent = `${formatRemainingClock(s.sprintRemainingSec)} (${delta >= 0 ? '+' : ''}${delta}w)`;
       }
     }
   }, 1000);

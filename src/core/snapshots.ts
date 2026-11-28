@@ -28,7 +28,7 @@ export function createSnapshotForScene(
     createdAt: now.toISOString(),
     label:
       label?.trim() ||
-      `Checkpoint · ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+      `Checkpoint (${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
     content: scene.content,
     wordCount: countWords(scene.content),
   };

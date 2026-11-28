@@ -112,7 +112,7 @@ export function renderInspector(container: HTMLElement, actions: AppActions): vo
 
   const timeInput = el('input', {
     className: 'bv-input',
-    attrs: { type: 'text', value: scene.timeline, placeholder: 'Day 1 · Morning' },
+    attrs: { type: 'text', value: scene.timeline, placeholder: 'Day 1, Morning' },
     on: {
       change: () =>
         actions.mutateProject((prev) =>
@@ -285,7 +285,7 @@ export function renderInspector(container: HTMLElement, actions: AppActions): vo
     el(
       'div',
       { className: 'bv-list-card' },
-      el('span', { className: 'bv-label', text: `${openMarksCount} open · ${stetMarksCount} stet` }),
+      el('span', { className: 'bv-label', text: `${openMarksCount} open, ${stetMarksCount} stet` }),
       el('span', {
         className: 'bv-mono-tag',
         text: openMarksCount > 0 ? 'REVIEW' : 'CLEAR',

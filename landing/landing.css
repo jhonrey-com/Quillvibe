@@ -20,6 +20,10 @@
   --accent-amber: #b3833e;
   --accent-emerald: #2c7a56;
   --qv-primary-ink: #ffffff;
+
+  --type-body: 16px;
+  --type-sm: 14px;
+  --type-caption: 12px;
 }
 
 :root[data-theme='parchment'] {
@@ -81,7 +85,7 @@ body {
   background: var(--bg-canvas);
   color: var(--text-primary);
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 15px;
+  font-size: var(--type-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   transition:
@@ -104,6 +108,7 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  text-underline-offset: 0.2em;
 }
 
 code,
@@ -287,7 +292,7 @@ code {
 }
 
 .ql-btn-lg {
-  height: 40px;
+  height: 44px;
   padding: 0 18px;
   font-size: 14px;
 }
@@ -337,6 +342,7 @@ code {
   line-height: 1.07;
   letter-spacing: -0.02em;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .ql-lead {
@@ -442,6 +448,7 @@ code {
   font-size: 30px;
   letter-spacing: -0.015em;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .ql-section-head p {
@@ -461,6 +468,26 @@ code {
   gap: 16px;
 }
 
+.ql-col {
+  padding-top: 18px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.ql-col h3,
+.ql-card h3 {
+  margin: 0 0 8px;
+  font-size: 16.5px;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.ql-col p,
+.ql-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
 .ql-card,
 .ql-price-card {
   padding: 22px;
@@ -468,25 +495,6 @@ code {
   border-radius: 8px;
   background: var(--bg-surface);
   transition: background-color 220ms ease, border-color 220ms ease;
-}
-
-.ql-card-meta {
-  font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
-  font-size: 11.5px;
-  color: var(--accent-ivory);
-  margin-bottom: 8px;
-}
-
-.ql-card h3 {
-  margin: 0 0 8px;
-  font-size: 16.5px;
-  font-weight: 600;
-}
-
-.ql-card p {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 14px;
 }
 
 /* --- Pricing & Region Notice --- */
@@ -591,6 +599,7 @@ code {
   font-size: 28px;
   line-height: 1.15;
   font-weight: 600;
+  text-wrap: balance;
 }
 
 .ql-sponsor-copy p {
@@ -683,7 +692,8 @@ code {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 12.5px;
+  font-size: var(--type-caption);
+  font-variant-numeric: tabular-nums;
   color: var(--text-muted);
 }
 

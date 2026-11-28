@@ -90,7 +90,7 @@ export const TOOLTIP_CATALOG = {
   tierSwitch: {
     title: 'Workspace Layout',
     short: 'Switch between Focused, Editorial, and Full Studio workspace layouts.',
-    details: 'Focused keeps a quiet drafting page; Editorial adds Corkboard, Outline, Proofread & Typeset; Full Studio opens Cover Studio, Story Bible & Graph.',
+    details: 'Focused keeps a distraction-free drafting page; Editorial adds Corkboard, Outline, Proofread & Typeset; Full Studio opens Cover Studio, Story Bible & Graph.',
   },
   themeSwitch: {
     title: 'Application Theme',

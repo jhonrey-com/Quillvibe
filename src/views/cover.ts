@@ -878,7 +878,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
       el('span', { className: 'bv-panel-title', text: 'Add Typography Layers' }),
       addTextBtn('Display Headline', 'A NEW EDITION', 28, '700', true),
       addTextBtn('Review / Praise Quote', '“A luminous work of rare craft.” — Review', 13, '400', false),
-      addTextBtn('Award / Series Tagline', 'VOLUME ONE · UNABRIDGED', 11, '600', true),
+      addTextBtn('Award / Series Tagline', 'VOLUME ONE — UNABRIDGED', 11, '600', true),
       el('span', { className: 'bv-panel-title', text: 'Core Book Fields', style: { marginTop: '8px' } }),
       ...(['title', 'subtitle', 'author', 'edition', 'signature'] as CoverElementKey[]).map((key) =>
         el('button', {
@@ -1246,7 +1246,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
           el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' } },
             el('div', {},
               el('strong', { text: titleLabel, style: { fontSize: '12.5px' } }),
-              el('div', { className: 'bv-mono-tag', text: `Template: ${snap.template} · ${(snap.shapeLayers?.length ?? 0) + (snap.textLayers?.length ?? 0) + (snap.graphicLayers?.length ?? 0) + (snap.pathLayers?.length ?? 0)} layers` }),
+              el('div', { className: 'bv-mono-tag', text: `Template: ${snap.template} (${(snap.shapeLayers?.length ?? 0) + (snap.textLayers?.length ?? 0) + (snap.graphicLayers?.length ?? 0) + (snap.pathLayers?.length ?? 0)} layers)` }),
             ),
             canPromote && onPromote
               ? el('button', {
@@ -1514,7 +1514,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
           'div',
           { className: `bv-list-card${cm.resolved ? ' is-resolved' : ''}`, style: { flexDirection: 'column', alignItems: 'stretch', gap: '4px', opacity: cm.resolved ? '0.65' : '1' } },
           el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
-            el('strong', { text: `#${idx + 1} · ${cm.author} (${cm.face})`, style: { fontSize: '12px' } }),
+            el('strong', { text: `#${idx + 1}: ${cm.author} (${cm.face})`, style: { fontSize: '12px' } }),
             el('span', { className: 'bv-mono-tag', text: cm.resolved ? 'Resolved' : 'Open' }),
           ),
           el('p', { className: 'bv-label', text: cm.text, style: { margin: '0', color: 'var(--text-primary)' } }),
@@ -3037,7 +3037,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
       );
       attachContextMenu(node, () => [
         {
-          heading: `Element · ${key}`,
+          heading: `Element: ${key}`,
           items: [
             {
               label: 'Center Horizontally',
@@ -3198,7 +3198,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
       },
       el('span', {
         className: `bv-cover-editable-block${activeFaceElementKey === 'spine-title' ? ' is-selected' : ''}`,
-        text: `${cover.spineTitle || project.title}  ·  ${penName}`,
+        text: `${cover.spineTitle || project.title}  —  ${penName}`,
         on: {
           click: (e) => {
             e.stopPropagation();
@@ -3308,7 +3308,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
     }
     const statusZoom = stageWrap.querySelector('.qv-studio-status-strip .bv-mono-tag');
     if (statusZoom) {
-      statusZoom.textContent = `Trim ${trim.label} · Spine ${spineInches}" · Zoom ${pctText}`;
+      statusZoom.textContent = `Trim ${trim.label} | Spine ${spineInches}" | Zoom ${pctText}`;
     }
   };
 
@@ -3694,8 +3694,8 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
   const bottomStatusStrip = el(
     'div',
     { className: 'qv-studio-status-strip' },
-    el('span', { className: 'bv-mono-tag', text: `Trim ${trim.label} · Spine ${spineInches}" · Zoom ${Math.round(studioZoom * 100)}%` }),
-    el('span', { className: 'bv-mono-tag', text: 'Two-finger pan · Ctrl+Wheel / Pinch zoom · Space+Drag pan · Right-click View' }),
+    el('span', { className: 'bv-mono-tag', text: `Trim ${trim.label} | Spine ${spineInches}" | Zoom ${Math.round(studioZoom * 100)}%` }),
+    el('span', { className: 'bv-mono-tag', text: 'Two-finger pan, Ctrl+Wheel / Pinch zoom, Space+Drag pan, Right-click View' }),
   );
   stageWrap.append(contextualStrip, stageScroll, bottomStatusStrip);
 
@@ -3746,7 +3746,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
         kind: 'graphic' as const,
         id: g.id,
         label: g.name,
-        badge: `${g.kind.toUpperCase()} · ${g.face}`,
+        badge: `${g.kind.toUpperCase()} (${g.face})`,
         zIndex: g.zIndex ?? 0,
         visible: g.visible !== false,
         locked: Boolean(g.locked),
@@ -3755,7 +3755,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
         kind: 'text' as const,
         id: tl.id,
         label: tl.text.slice(0, 28) || 'Text Box',
-        badge: `TEXT · ${tl.face}`,
+        badge: `TEXT (${tl.face})`,
         zIndex: tl.zIndex ?? 0,
         visible: tl.visible !== false,
         locked: Boolean(tl.locked),
@@ -3764,7 +3764,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
         kind: 'path' as const,
         id: pl.id,
         label: pl.name,
-        badge: `PATH · ${pl.face} (${pl.points.length} pts)`,
+        badge: `PATH (${pl.face}, ${pl.points.length} pts)`,
         zIndex: pl.zIndex ?? 0,
         visible: pl.visible !== false,
         locked: Boolean(pl.locked),
@@ -3773,7 +3773,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
         kind: 'shape' as const,
         id: sh.id,
         label: sh.name,
-        badge: `SHAPE · ${sh.face}`,
+        badge: `SHAPE (${sh.face})`,
         zIndex: sh.zIndex ?? 0,
         visible: sh.visible !== false,
         locked: Boolean(sh.locked),
@@ -4232,7 +4232,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
         ),
       );
       rightBody.append(
-        el('span', { className: 'bv-panel-title', text: `Shape · ${selectedShapeLayer.name}` }),
+        el('span', { className: 'bv-panel-title', text: `Shape: ${selectedShapeLayer.name}` }),
         el('div', { className: 'bv-field' }, (wLbl = el('label', { className: 'bv-label', text: `Width (${selectedShapeLayer.widthPct}%)` })), wRange),
         el('div', { className: 'bv-field' }, (hLbl = el('label', { className: 'bv-label', text: `Height (${selectedShapeLayer.heightPct}%)` })), hRange),
         el('div', { className: 'bv-field' }, el('label', { className: 'bv-label', text: 'Fill Color' }), fillIn),
@@ -4364,7 +4364,7 @@ export function renderCoverStudio(container: HTMLElement, rawActions: AppActions
         ),
       );
       rightBody.append(
-        el('span', { className: 'bv-panel-title', text: `Graphic · ${selectedGraphicLayer.name}` }),
+        el('span', { className: 'bv-panel-title', text: `Graphic: ${selectedGraphicLayer.name}` }),
         el('div', { className: 'bv-field' }, (widthLbl = el('label', { className: 'bv-label', text: `Scale (${selectedGraphicLayer.widthPct}%)` })), widthRange),
         el('div', { className: 'bv-field' }, (rotLbl = el('label', { className: 'bv-label', text: `Rotation (${selectedGraphicLayer.rotationDeg}°)` })), rotRange),
         el('div', { className: 'bv-field' }, (opLbl = el('label', { className: 'bv-label', text: `Opacity (${Math.round(selectedGraphicLayer.opacity * 100)}%)` })), opRange),

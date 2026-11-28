@@ -2291,7 +2291,7 @@ export function renderGraphView(container: HTMLElement, rawActions: AppActions):
       }),
       el('div', {
         className: 'bv-mono-tag',
-        text: `${graph.nodes.length} nodes · ${graph.groups?.length ?? 0} groups · ${graph.edges.length} links`,
+        text: `${graph.nodes.length} nodes, ${graph.groups?.length ?? 0} groups, ${graph.edges.length} links`,
       }),
       el('span', { className: 'bv-panel-title', text: 'Color Group Rules' }),
       el('div', { style: { display: 'flex', gap: '6px' } }, ruleQueryIn, ruleColorIn),

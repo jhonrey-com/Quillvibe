@@ -419,7 +419,7 @@ export function maybeRunFirstLaunchSplash(actions: AppActions, forceShow = false
 
   const tierRow = el('div', { className: 'qv-tier-card-grid' });
   const tierCards: Array<{ id: ToolTier; title: string; desc: string }> = [
-    { id: 'basic', title: 'Focused', desc: 'Clean page only. Quiet drafting.' },
+    { id: 'basic', title: 'Focused', desc: 'Single drafting sheet with binder and core formatting.' },
     { id: 'intermediate', title: 'Editorial', desc: 'Corkboard, Outline, Proofread, Typeset.' },
     { id: 'advanced', title: 'Full Studio', desc: 'Story Bible, Graph, Cover Studio, Permissions.' },
   ];
@@ -551,7 +551,6 @@ export function maybeRunFirstLaunchSplash(actions: AppActions, forceShow = false
         text: 'Step-by-step lessons for Manuscript drafting, Story Bible, Cover Studio & Publishing.',
       }),
     ),
-    el('span', { className: 'qv-welcome-course-arrow', text: '→' }),
   );
 
   const helpCardBtn = el(
@@ -571,7 +570,6 @@ export function maybeRunFirstLaunchSplash(actions: AppActions, forceShow = false
         text: 'Quick workspace setup answers, file formats, shortcuts, and offline backup guides.',
       }),
     ),
-    el('span', { className: 'qv-welcome-course-arrow', text: '→' }),
   );
 
   const subtitle = 'Offline book writing, worldbuilding, and print/EPUB studio.';

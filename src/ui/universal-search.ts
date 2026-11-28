@@ -500,7 +500,7 @@ export function buildSearchCorpus(
       scope: 'book',
       iconName: 'draft-sheet',
       title: ref.scene.title || 'Untitled Scene',
-      subtitle: `${ref.chapter.title} · ${snippet || 'Empty scene draft'}`,
+      subtitle: `${ref.chapter.title} — ${snippet || 'Empty scene draft'}`,
       badge: ref.scene.status.toUpperCase(),
       searchText: `${ref.part.title} ${ref.chapter.title} ${ref.scene.title} ${ref.scene.synopsis} ${ref.scene.pov} ${ref.scene.location} ${ref.scene.content.slice(0, 1500)}`.toLowerCase(),
       scoreBoost: 9,
@@ -647,7 +647,7 @@ export function openUniversalSearch(actions: AppActions, getState: () => AppStat
   const resultsEl = el('div', { className: 'qv-usearch-results', attrs: { role: 'listbox' } });
   const footerHint = el('div', {
     className: 'qv-usearch-footer',
-    text: '↑↓ Select · Enter Open · Esc Close',
+    text: '↑↓ Select | Enter Open | Esc Close',
   });
 
   const renderScopes = () => {
